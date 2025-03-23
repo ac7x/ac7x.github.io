@@ -6,8 +6,6 @@
     "deploy": "echo 'This project is deployed via GitHub Actions and Vercel.'"
   },
   "dependencies": {
-    "node": "^20",
-    "pnpm": "^9",
-    "vercel": "^41"
+    "pnpm": "^9"
   }
 }
