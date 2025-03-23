@@ -1,140 +1,162 @@
 # 部署指南
 
-本文檔提供 AC7X 專案的部署方法和最佳實踐。
+本文檔詳細說明如何部署本專案。
 
-## 部署選項
+## 環境準備
 
-本專案支持多種部署選項，可根據需求選擇最適合的方式：
+### 系統需求
 
-### 1. GitHub Pages (靜態部署)
+- Node.js v18 或更高版本
+- Docker 20.10 或更高版本
+- 至少 1GB RAM 和 10GB 磁盤空間
 
-適用於靜態網站內容。
+### 環境變量
 
-#### 自動部署 (推薦)
+以下是必要的環境變量：
 
-專案已配置 GitHub Actions 工作流實現自動部署：
-
-1. 每當推送到 `main` 分支時，會自動構建並部署到 GitHub Pages
-2. 部署進度可在 Actions 頁面查看
-
-#### 手動部署
-
-```bash
-# 構建靜態文件
-pnpm build
-
-# 部署到 GitHub Pages
-pnpm deploy
+```
+NODE_ENV=production
+NEXT_PUBLIC_API_URL=https://api.example.com
+DATABASE_URL=postgres://user:password@host:port/dbname
 ```
 
-### 2. Docker 容器部署
+## 部署方法
 
-適用於需要更多控制或伺服器端功能的場景。
+### 方法一：Docker 部署
 
-#### 構建 Docker 映像
+1. **構建 Docker 映像**
 
-```bash
-# 在專案根目錄執行
-docker build -t ac7x-website .
+   ```bash
+   docker build -t ac7x-website:latest .
+   ```
 
-# 啟動容器
-docker run -p 3000:3000 ac7x-website
-```
+2. **運行容器**
 
-#### 使用 Docker Compose
+   ```bash
+   docker run -d -p 3000:3000 \
+     -e NODE_ENV=production \
+     -e NEXT_PUBLIC_API_URL=https://api.example.com \
+     --name ac7x-website \
+     ac7x-website:latest
+   ```
 
-專案包含 `docker-compose.yml` 配置文件，可用於更複雜的部署場景：
+3. **檢查容器狀態**
 
-```bash
-# 啟動所有服務
-docker-compose up -d
+   ```bash
+   docker ps
+   docker logs ac7x-website
+   ```
 
-# 查看日誌
-docker-compose logs -f
-```
+### 方法二：直接部署
 
-### 3. Vercel / Netlify 部署
+1. **安裝依賴**
 
-適用於需要 CI/CD 和自動預覽功能的團隊。
+   ```bash
+   pnpm install --prod
+   ```
 
-1. 在 Vercel/Netlify 上連接 GitHub 倉庫
-2. 選擇 Next.js 框架預設
-3. 配置環境變數
-4. 部署
+2. **構建應用**
 
-## 環境變數配置
+   ```bash
+   pnpm build
+   ```
 
-根據不同部署環境，需要配置以下環境變數：
+3. **啟動應用**
 
-| 變數名 | 說明 | 範例 |
-|-------|-----|-----|
-| `NODE_ENV` | 執行環境 | `production`, `development` |
-| `API_URL` | API 服務地址 | `https://api.example.com` |
-| `ANALYTICS_ID` | 分析工具 ID | `UA-XXXXXXXX-X` |
+   ```bash
+   pnpm start
+   ```
 
-## 部署檢查清單
+### 方法三：使用 GitHub Actions 自動部署
 
-每次部署前請檢查：
+專案配置了自動部署工作流。當代碼推送到 `main` 分支時，GitHub Actions 會自動：
 
-- [ ] 所有測試通過 (`pnpm test`)
-- [ ] 代碼格式和 lint 檢查通過 (`pnpm lint`)
-- [ ] 構建成功並生成預期文件 (`pnpm build`)
-- [ ] 環境變數設置正確
-- [ ] 資源文件路徑使用相對路徑或 CDN 路徑
+1. 運行測試
+2. 構建 Docker 映像
+3. 推送到容器註冊表
+4. 部署到目標環境
+
+詳細配置請參考 `.github/workflows/docker-publish.yml`。
 
 ## 部署後驗證
 
-部署完成後請驗證：
+部署完成後，執行以下步驟以驗證部署是否成功：
 
-1. 網站能正常訪問
-2. 所有頁面載入無錯誤
-3. 核心功能正常工作
-4. 性能達到預期水平 (通過 Lighthouse 或類似工具檢查)
+1. 訪問網站首頁檢查是否正常載入
+2. 檢查日誌是否有錯誤
+3. 運行健康檢查
+
+   ```bash
+   curl -I http://your-domain.com/api/health
+   ```
+
+## 常見問題
+
+### 網站載入慢
+
+- 檢查伺服器資源使用情況
+- 確認 CDN 配置是否正確
+- 檢查資料庫查詢性能
+
+### 部署失敗
+
+- 檢查環境變量是否正確設置
+- 確認伺服器有足夠的磁盤空間
+- 檢查日誌獲取詳細錯誤信息
 
 ## 回滾策略
 
-如發現部署問題需要回滾：
+如果需要回滾到先前版本：
 
-### GitHub Pages
-
-1. 在 Actions 頁面找到之前成功的部署
-2. 重新運行該工作流
-
-### Docker
+### Docker 部署
 
 ```bash
-# 列出可用的映像版本
-docker images
-
 # 停止當前容器
-docker stop [container-id]
+docker stop ac7x-website
 
-# 啟動使用先前映像的容器
-docker run -p 3000:3000 ac7x-website:[previous-tag]
+# 運行先前版本的映像
+docker run -d -p 3000:3000 \
+  -e NODE_ENV=production \
+  --name ac7x-website \
+  ac7x-website:previous-tag
 ```
 
-## 監控和日誌
+### GitHub Actions 部署
 
-建議配置以下監控方案：
+在 GitHub 儲存庫頁面：
 
-1. 使用 Uptime Robot 或類似服務監控網站可用性
-2. 配置錯誤跟踪 (Sentry 等)
-3. 設置性能監控 (Google Analytics, Lighthouse)
+1. 前往 Actions 頁簽
+2. 找到成功的先前部署工作流運行
+3. 點擊 "Re-run jobs" 重新運行該工作流
 
-## 常見問題解決
+## 監控和維護
 
-### 靜態資源無法載入
+### 日誌
 
-- 檢查 `next.config.js` 中的 `assetPrefix` 配置
-- 確保 CDN 路徑正確
+應用日誌存儲在：
 
-### 部署後頁面返回 404
+- Docker: 容器日誌中
+- 直接部署: `/var/log/ac7x-website/`
 
-- 檢查路由配置
-- 確認 `next.config.js` 中的 `basePath` 設置
+### 健康檢查
 
-### API 連接失敗
+定期檢查健康端點：
 
-- 驗證環境變數是否正確設置
-- 檢查 CORS 配置
-- 確認網絡安全組/防火牆規則
+```
+http://your-domain.com/api/health
+```
+
+### 備份
+
+數據庫每日備份，存儲在：
+
+```
+/backup/database/daily/
+```
+
+## 安全注意事項
+
+- 定期更新依賴
+- 使用 HTTPS
+- 設置適當的防火牆規則
+- 實施速率限制

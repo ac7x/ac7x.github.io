@@ -1,0 +1,71 @@
+version: 2
+updates:
+  # 更新 npm 依賴項 (使用 pnpm 作為包管理器)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    versioning-strategy: "auto"
+    labels:
+      - "dependencies"
+      - "pnpm"
+    commit-message:
+      prefix: "📦"
+      include: "scope"
+    assignees:
+      - "ac7x"
+    reviewers:
+      - "ac7x"
+    ignore:
+      # 忽略次要版本更新的開發依賴項
+      - dependency-name: "@types/*"
+        update-types: ["version-update:semver-minor"]
+    groups:
+      # 將 React 相關依賴項合併為一個 PR
+      react-deps:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+
+  # 更新 GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "👷"
+      include: "scope"
+
+  # 更新 Docker 依賴項
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "docker"
+    commit-message:
+      prefix: "🐳"
+      include: "scope"
+
+  # 監控和更新 scripts 目錄中的依賴項
+  - package-ecosystem: "npm"
+    directory: "/scripts"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+      - "monitoring"
+    commit-message:
+      prefix: "🔍"
+      include: "scope"

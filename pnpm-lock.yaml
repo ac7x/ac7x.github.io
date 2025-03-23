@@ -1,0 +1,32 @@
+lockfileVersion: '6.0'
+
+dependencies:
+  next:
+    specifier: ^13.4.12
+    version: 13.4.12
+  react:
+    specifier: ^18.2.0
+    version: 18.2.0
+  react-dom:
+    specifier: ^18.2.0
+    version: 18.2.0
+
+devDependencies:
+  '@types/node':
+    specifier: ^20.4.5
+    version: 20.4.5
+  '@types/react':
+    specifier: ^18.2.17
+    version: 18.2.17
+  eslint:
+    specifier: ^8.46.0
+    version: 8.46.0
+  eslint-config-next:
+    specifier: ^13.4.12
+    version: 13.4.12
+  typescript:
+    specifier: ^5.1.6
+    version: 5.1.6
+
+# 這裡省略了實際的依賴關係樹，真實的lock文件會非常長
+# 真實的pnpm-lock.yaml會由pnpm自動生成

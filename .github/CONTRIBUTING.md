@@ -1,98 +1,108 @@
-# 如何貢獻
+# 貢獻指南
 
-感謝您對 AC7X 專案的關注！我們歡迎各種形式的貢獻，包括但不限於功能開發、錯誤修復、文檔改進、測試和反饋。本指南將幫助您了解如何參與專案開發。
+感謝您考慮為本專案做出貢獻！以下是參與專案開發的指南。
 
-## 開始之前
+## 前置準備
 
-請先閱讀以下文檔：
+在開始貢獻之前，請確保您已經：
 
-- [行為準則](./CODE_OF_CONDUCT.md)
-- [貢獻規範](./CONTRIBUTION_GUIDELINES.md)
-- [專案架構](./ARCHITECTURE.md)
+1. 安裝了 Node.js (推薦 v18 或更高版本)
+2. 安裝了 pnpm (推薦 v7 或更高版本)
+3. Fork 了本儲存庫並 clone 到本地
 
-## 貢獻流程
+## 開發流程
 
-### 1. 尋找任務
-
-- 查看 [Issues](https://github.com/ac7x/ac7x.github.io/issues) 頁面尋找標記為 "good first issue" 或 "help wanted" 的問題
-- 或者，您可以提交新的 Issue 描述您發現的問題或建議的改進
-
-### 2. 討論方案
-
-在開始工作之前，請在相關 Issue 下留言，說明您計劃如何解決問題。這有助於：
-
-- 避免重複工作
-- 獲得社區和維護者的早期反饋
-- 確保您的方案與專案方向一致
-
-### 3. 開發流程
-
-1. Fork 專案到您的 GitHub 帳戶
-2. 克隆您的 Fork 到本地
+1. **設置開發環境**
    ```bash
-   git clone https://github.com/您的用戶名/ac7x.github.io.git
+   # 克隆您 fork 的儲存庫
+   git clone https://github.com/YOUR_USERNAME/ac7x.github.io.git
    cd ac7x.github.io
-   ```
-3. 創建新分支（參見 [貢獻規範](./CONTRIBUTION_GUIDELINES.md) 中的分支命名規則）
-   ```bash
-   git checkout -b feature/您的功能名稱
-   ```
-4. 安裝依賴
-   ```bash
+
+   # 安裝依賴
    pnpm install
+
+   # 設置開發環境
+   node scripts/setup-node.js
    ```
-5. 進行開發
-6. 確保代碼通過測試和 lint
+
+2. **創建分支**
    ```bash
-   pnpm test
-   pnpm lint
+   # 為您的貢獻創建一個新分支
+   git checkout -b feature/your-feature-name
    ```
-7. 提交您的變更（遵循 [提交規範](./CONTRIBUTION_GUIDELINES.md#提交規範)）
+
+3. **進行修改**
+   - 撰寫代碼
+   - 撰寫測試
+   - 確保所有測試通過
+
+4. **提交修改**
    ```bash
+   # 添加修改
    git add .
-   git commit -m "✨ 添加新功能：XXX"
+
+   # 提交修改（請遵循提交規範）
+   git commit -m "✨ 添加新功能：功能描述"
    ```
-8. 推送到您的 Fork
+
+5. **推送到您的 fork**
    ```bash
-   git push origin feature/您的功能名稱
+   git push origin feature/your-feature-name
    ```
-9. 創建 Pull Request
 
-### 4. Pull Request 流程
+6. **提交 Pull Request**
+   - 前往 GitHub 儲存庫頁面
+   - 點擊 "Compare & pull request"
+   - 填寫 PR 標題和描述
+   - 提交 PR
 
-1. 填寫完整的 PR 描述，說明您的變更解決了什麼問題、如何解決的
-2. 連接相關的 Issue（例如："Closes #123"）
-3. 確保自動化檢查通過
-4. 等待審核並根據反饋進行修改
+## 代碼風格
 
-## 開發環境設置
+- 遵循專案的 ESLint 和 TypeScript 配置
+- 使用 2 空格縮進
+- 使用有意義的變量和函數名稱
+- 添加適當的注釋
 
-詳見 [README.md](../README.md) 中的「快速開始」章節和 [開發指南](./DEVELOPMENT_GUIDELINES.md)。
+## 測試
 
-## 報告錯誤
+- 確保所有現有測試通過
+- 為新功能或修復的錯誤添加適當的測試
+- 確保測試覆蓋率不會下降
 
-如果您發現了錯誤，請創建一個 Issue 並提供以下信息：
+```bash
+# 運行測試
+pnpm test
 
-- 錯誤的簡短描述
-- 重現步驟
-- 預期行為與實際行為
-- 環境信息（瀏覽器版本、操作系統等）
-- 如果適用，添加截圖或錯誤日誌
+# 運行測試並生成覆蓋率報告
+pnpm test:coverage
+```
 
-## 提出功能請求
+## 文檔
 
-對於功能請求，請創建一個 Issue 並提供：
+- 更新受影響功能的文檔
+- 為新功能添加文檔
+- 確保文檔與代碼同步
 
-- 功能的簡短描述
-- 該功能解決的問題或帶來的價值
-- 可能的實現方式（如果您有想法）
-- 相關的例子或參考（如果有）
+## 提交規範
 
-## 聯絡方式
+請參閱 [貢獻規範](CONTRIBUTION_GUIDELINES.md) 了解提交訊息格式、分支命名等詳細要求。
 
-如果您有其他問題，可以通過以下方式聯繫我們：
+## 問題和討論
 
-- 創建一個 [Discussion](https://github.com/ac7x/ac7x.github.io/discussions)
-- 發送電子郵件至 [project-email@example.com]
+- 使用 Issues 報告錯誤或提出功能請求
+- 參與現有 Issues 和 PR 的討論
+- 在實現重大變更之前先討論
+
+## 審核流程
+
+- 所有 PR 需要至少一位維護者的審核通過
+- 自動化測試必須通過
+- 代碼審核意見需要被解決
+
+## 行為準則
+
+- 尊重其他貢獻者
+- 保持建設性和專業的討論
+- 接受建設性的批評和反饋
 
 感謝您的貢獻！

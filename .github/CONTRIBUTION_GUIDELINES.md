@@ -29,10 +29,7 @@
 # 專案目錄結構
 
 /
-├── .dockerignore                # 指定在 Docker 構建時忽略的文件和目錄
 ├── Dockerfile                   # Docker 鏡像構建配置文件
-├── package.json                 # 專案的 npm 配置文件，包含依賴項和腳本
-├── pnpm-lock.yaml               # pnpm 的鎖定文件，確保依賴項版本一致性
 ├── README.md                    # 專案的主要說明文件
 ├── scripts/                     # 存放專案相關的腳本文件
 │   ├── pnpm-store-monitor.js    # pnpm 存儲監控腳本
@@ -41,7 +38,6 @@
 └── .github/                     # GitHub 相關配置和文件
     ├── ARCHITECTURE.md          # 專案架構說明文件
     ├── CONTRIBUTING.md          # 貢獻指南，說明如何參與專案開發
-    ├── CONTRIBUTION_GUIDELINES.md # 貢獻規範，詳細說明貢獻流程
     ├── dependabot.yml           # Dependabot 配置文件，用於自動更新依賴項
     ├── DEPLOYMENT.md            # 部署指南，說明如何部署專案
     ├── DEVELOPMENT_GUIDELINES.md # 開發指南，說明開發流程和規範

@@ -1,168 +1,91 @@
 # 開發指南
 
-本文檔提供 AC7X 專案的開發流程和規範，以確保程式碼品質和一致性。
+本文檔提供了專案開發的詳細指南和最佳實踐。
 
 ## 開發環境設置
 
-### 必要條件
-
-- Node.js (>= 16.x)
-- pnpm (>= 7.x)
+### 必要軟體
+- Node.js 18+
+- pnpm 8+
 - Git
-- VSCode (推薦)
+- Visual Studio Code (推薦)
 
-### 環境設置步驟
-
-1. 克隆專案
-
-```bash
-git clone https://github.com/ac7x/ac7x.github.io.git
-cd ac7x.github.io
-```
-
-2. 安裝依賴
-
-```bash
-pnpm install
-```
-
-3. 設置環境變數
-
-```bash
-cp .env.example .env.local
-```
-
-4. 啟動開發伺服器
-
-```bash
-pnpm dev
-```
-
-## 程式碼風格與規範
-
-### 一般原則
-
-- 使用 TypeScript 進行開發
-- 遵循 DRY (Don't Repeat Yourself) 原則
-- 模組化設計，保持單一職責
-- 優先使用函數式組件
-- 正確處理異步操作
-- 寫清晰的註解和文檔
-
-### 命名規範
-
-- **檔案命名**
-  - React 組件: PascalCase (例: `Button.tsx`)
-  - 工具函數: camelCase (例: `formatDate.ts`)
-  - 樣式文件: 與組件同名 (例: `Button.styles.ts`)
-
-- **變數/函數命名**
-  - 變數和函數: camelCase
-  - 常量: UPPER_SNAKE_CASE
-  - 類和類型: PascalCase
-  - 布林變數: 使用 `is`, `has`, `should` 等前綴
-
-### 目錄結構
-
-```
-src/
-  ├── components/       # UI 組件
-  │   ├── common/       # 通用組件
-  │   ├── layout/       # 布局組件
-  │   └── [feature]/    # 按功能分組的組件
-  ├── hooks/            # 自定義 React hooks
-  ├── pages/            # 頁面組件和路由
-  ├── lib/              # 工具函數和業務邏輯
-  ├── styles/           # 全局樣式和主題
-  └── types/            # TypeScript 類型定義
-```
-
-## 開發工作流程
-
-### 分支策略
-
-- `main`: 主分支，只接受經審核的 PR
-- `feature/*`: 新功能分支
-- `fix/*`: 錯誤修復分支
-- `docs/*`: 文檔更新分支
-
-### 開發流程
-
-1. 從最新的 `main` 分支創建功能分支
-2. 在本地開發功能
-3. 提交代碼 (遵循 [提交規範](./CONTRIBUTION_GUIDELINES.md#提交規範))
-4. 推送分支到遠程
-5. 創建 Pull Request
-6. 等待審核並處理回饋
-7. 合併到 `main` 分支
-
-### Pull Request 要求
-
-- 清晰描述變更內容和目的
-- 關聯相關 Issue
-- 包含必要的測試
-- 通過所有自動化檢查
-- 獲得至少一位維護者的批准
-
-## 測試規範
-
-### 測試策略
-
-- 單元測試: 測試單個函數和組件
-- 集成測試: 測試組件間的交互
-- 端到端測試: 測試完整的用戶流程
-
-### 測試目錄結構
-
-```
-src/
-  └── components/
-      └── Button/
-          ├── Button.tsx
-          ├── Button.styles.ts
-          └── __tests__/
-              ├── Button.test.tsx      # 單元測試
-              └── Button.e2e.test.ts   # 端到端測試
-```
-
-### 測試規範
-
-- 每個組件和工具函數應有對應的單元測試
-- 測試應涵蓋主要功能點和邊緣情況
-- 使用 Jest 作為測試框架
-- 使用 React Testing Library 測試組件
-- 使用 Cypress 進行端到端測試
-
-## 性能優化
-
-### 基本原則
-
-- 使用 React.memo 避免不必要的重渲染
-- 優化大型列表渲染 (虛擬列表)
-- 懶加載組件和圖片
-- 優化 bundle 大小
-- 實施代碼分割
-
-### 性能監控
-
-- 使用 Lighthouse 評估性能
-- 監控關鍵指標 (FCP, LCP, TTI, CLS)
-- 使用 React Profiler 識別瓶頸
-
-## 工具和配置
-
-- **Linting**: ESLint 與自定義規則
-- **Formatting**: Prettier
-- **提交檢查**: Husky + lint-staged
-- **依賴管理**: pnpm
-- **CI/CD**: GitHub Actions
-
-## 推薦的 VSCode 擴展
-
+### 推薦的VSCode插件
 - ESLint
 - Prettier
 - TypeScript Vue Plugin
-- vscode-styled-components
-- GitLens
-- Jest Runner
-- Import Cost
+- Docker
+
+### 環境設置步驟
+
+1. 克隆專案:
+   ```bash
+   git clone https://github.com/ac7x/ac7x.github.io.git
+   cd ac7x.github.io
+   ```
+
+2. 安裝依賴:
+   ```bash
+   pnpm install
+   ```
+
+3. 啟動開發伺服器:
+   ```bash
+   pnpm dev
+   ```
+
+## 代碼風格指南
+
+### JavaScript/TypeScript
+- 使用ES6+語法
+- 優先使用`const`，其次是`let`，避免使用`var`
+- 使用異步/等待模式而非回調
+- 函數命名使用駝峰式命名法(camelCase)
+- 組件命名使用帕斯卡命名法(PascalCase)
+
+### CSS/樣式
+- 使用CSS模組或Tailwind CSS
+- 使用語義化命名
+- 使用相對單位(rem, em, %)而非固定單位(px)
+
+### 組件開發
+- 遵循單一責任原則
+- 將可重用邏輯提取到hooks或工具函數
+- 優先使用函數組件和React hooks
+
+## 測試指南
+
+### 單元測試
+- 每個功能模塊都應有對應的單元測試
+- 使用Jest作為測試框架
+- 運行測試: `pnpm test`
+
+### 端到端測試
+- 主要流程應有端到端測試
+- 使用Cypress進行端到端測試
+- 運行端到端測試: `pnpm test:e2e`
+
+## 版本控制
+
+### 分支策略
+- `main`: 穩定版本，只接受通過審核的PR
+- `develop`: 開發版本，功能完成後合併到此
+- 功能分支: 從`develop`分出，命名為`feature/功能名稱`
+- 修復分支: 從`main`分出，命名為`hotfix/問題描述`
+
+### 提交訊息
+請遵循[貢獻規範](CONTRIBUTION_GUIDELINES.md)中的提交訊息格式。
+
+## 效能優化
+
+- 使用React.memo減少不必要的重渲染
+- 優化圖片使用next/image組件
+- 使用動態導入延遲加載大型組件
+- 確保生產構建經過適當壓縮
+
+## 安全最佳實踐
+
+- 不要在客戶端存儲敏感信息
+- 使用環境變數存儲API密鑰
+- 實施適當的內容安全策略
+- 定期更新依賴以修補安全漏洞
