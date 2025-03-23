@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "up": "git add --all && git commit -m \"Initial commit\" && git push -u origin main",
-    "deploy": "echo 'This project is deployed via GitHub Actions and Vercel.'"
+    "deploy": "echo 'This project is deployed via GitHub Actions and Vercel.'",
+    "build": "echo 'Building project...'"
   },
   "dependencies": {
     "pnpm": "^9"
