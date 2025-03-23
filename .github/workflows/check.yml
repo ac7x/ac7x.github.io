@@ -1,4 +1,4 @@
-name: 检查镜像是否存在
+name: Docker 检查
 
 on:
   schedule:
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 执行 Docker 镜像清理
+    - name: 执行 Docker 清理
       run: |
         echo "执行 Docker 镜像清理操作"
         # 清理镜像相关的命令
