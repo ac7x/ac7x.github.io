@@ -9,11 +9,11 @@ ac7x.github.io/
 │   │   ├── build.yml              # 構建流程
 │   │   ├── test.yml               # 測試流程
 │   │   └── deploy.yml             # 部署流程
+│   │   ├── pages-deploy.yml       # GitHub Pages 部署工作流程
 │   ├── docker-publish.yml         # Docker 鏡像發布工作流程
 │   │   ├── build-image.yml        # 鏡像構建
 │   │   └── push-image.yml         # 鏡像推送
-│   ├── dependency-review.yml      # 依賴項安全審查
-│   │   ├── npm-audit.yml          # NPM 套件安全掃描
+│   │   ├── npm-audit.yml         # NPM 套件安全掃描
 │   │   └── docker-scan.yml        # Docker 鏡像掃描
 │   ├── codeql-analysis.yml        # 代碼質量分析
 │   │   ├── typescript.yml         # TypeScript 代碼分析
@@ -26,8 +26,23 @@ ac7x.github.io/
 │   └── docker-compose.yml         # Docker Compose 文件（如果需要本地測試）
 │
 ├── src/
-│   └── tests/                 # 測試文件
-│       └── ...                # 測試相關文件
+│   ├── pages/                     # Next.js 頁面文件
+│   │   ├── index.tsx              # 首頁
+│   │   ├── dashboard.tsx          # 儀表板頁面
+│   │   └── _app.tsx               # 自定義 App 組件
+│   ├── components/                # React 組件
+│   │   ├── Header.tsx             # 頁面頂部組件
+│   │   ├── Sidebar.tsx            # 側邊欄組件
+│   │   └── Chart.tsx              # 圖表組件
+│   ├── styles/                    # 樣式文件
+│   │   ├── globals.css            # 全局樣式
+│   │   └── Home.module.css        # 首頁樣式
+│   ├── utils/                     # 工具函數
+│   │   ├── api.ts                 # API 請求工具
+│   │   └── constants.ts           # 常量定義
+│   └── types/                     # TypeScript 類型定義
+│       ├── index.ts               # 全局類型定義
+│       └── dashboard.ts           # 儀表板相關類型
 │
 ├── scripts/
 │   ├── build/
@@ -44,19 +59,16 @@ ac7x.github.io/
 │       └── artifacts.ts           # 構建產物清理
 │
 ├── config/
-│   ├── vercel.json            # Vercel 配置文件
-│   └── node-config.json       # Node.js 配置文件
+│   ├── next.config.js             # Next.js 配置文件
+│   ├── vercel.json                # Vercel 配置文件
+│   └── node-config.json           # Node.js 配置文件
 │
-├── docs/
-│   ├── README.md              # 專案說明文件
-│   └── architecture.md        # 技術架構說明
-│
-├── .dockerignore              # Docker 忽略文件
-├── .gitignore                 # Git 忽略文件
-├── package.json               # Node.js 專案配置文件
-├── pnpm-lock.yaml             # pnpm 鎖定文件
-├── LICENSE                    # 專案授權文件
-└── .env                       # 環境變數文件
+├── .dockerignore                  # Docker 忽略文件
+├── .gitignore                     # Git 忽略文件
+├── package.json                   # Node.js 專案配置文件
+├── pnpm-lock.yaml                 # pnpm 鎖定文件
+├── LICENSE                        # 專案授權文件
+└── .env                           # 環境變數文件
 
 ## 專案概述
 本專案專注於透過自動化CI/CD流程來加速Node.js 20、pnpm與Vercel的部署流程，提升開發效率。
