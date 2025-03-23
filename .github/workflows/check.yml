@@ -21,8 +21,7 @@ jobs:
       run: |
         IMAGE_NAME="base.image"
         RESPONSE=$(curl -s -H "Authorization: Bearer ${{ secrets.DOCKER_TOKEN }}" "https://hub.docker.com/v2/repositories/${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}/")
-        
-        # 检查响应中是否有镜像
+        echo "RESPONSE: $RESPONSE"
         if echo "$RESPONSE" | grep -q '"name": "'"$IMAGE_NAME"'"'; then
           echo "镜像 $IMAGE_NAME 存在"
           echo "image_exists=true" >> $GITHUB_ENV
