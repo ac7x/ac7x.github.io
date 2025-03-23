@@ -1,5 +1,5 @@
 # 使用 Node.js 20 的精簡版作為基礎映像
-FROM node:20-slim AS base
+FROM node:23-slim AS base
 
 # 設置 PNPM 的環境變數
 ENV PNPM_HOME="/pnpm"
