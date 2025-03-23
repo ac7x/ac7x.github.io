@@ -7,7 +7,6 @@ ac7x.github.io/
 │   ├── workflows/
 │   │   ├── ci-cd.yml              # CI/CD 主要工作流程
 │   │   ├── build.yml              # 構建流程
-│   │   ├── test.yml               # 測試流程
 │   │   └── deploy.yml             # 部署流程
 │   │   ├── pages-deploy.yml       # GitHub Pages 部署工作流程
 │   ├── docker-publish.yml         # Docker 鏡像發布工作流程
@@ -22,8 +21,7 @@ ac7x.github.io/
 │   └── dependabot.yml             # Dependabot 配置文件
 │
 ├── docker/
-│   ├── Dockerfile                 # 多階段構建的 Dockerfile
-│   └── docker-compose.yml         # Docker Compose 文件（如果需要本地測試）
+│   └── Dockerfile                 # 多階段構建的 Dockerfile
 │
 ├── src/
 │   ├── pages/                     # Next.js 頁面文件
@@ -62,13 +60,7 @@ ac7x.github.io/
 │   ├── next.config.js             # Next.js 配置文件
 │   ├── vercel.json                # Vercel 配置文件
 │   └── node-config.json           # Node.js 配置文件
-│
-├── .dockerignore                  # Docker 忽略文件
-├── .gitignore                     # Git 忽略文件
-├── package.json                   # Node.js 專案配置文件
-├── pnpm-lock.yaml                 # pnpm 鎖定文件
-├── LICENSE                        # 專案授權文件
-└── .env                           # 環境變數文件
+
 
 ## 專案概述
 本專案專注於透過自動化CI/CD流程來加速Node.js 20、pnpm與Vercel的部署流程，提升開發效率。
@@ -90,9 +82,8 @@ on:
    - node_modules緩存優化
    - Docker層級緩存
 
-2. **代碼檢查與測試**
+2. **代碼檢查**
    - ESLint靜態分析
-   - Jest單元測試
    - TypeScript類型檢查
 
 3. **Docker構建與發布**
