@@ -1,30 +1,35 @@
 {
   "name": "ac7x.github.io",
   "version": "1.0.0",
-  "description": "AC7X 個人網站",
-  "main": "index.js",
+  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:dev": "ts-node scripts/build/index.ts dev",
+    "build:prod": "ts-node scripts/build/index.ts prod",
     "start": "next start",
     "lint": "next lint",
-    "clean": "node scripts/cleanup.js",
-    "monitor": "node scripts/pnpm-store-monitor.js"
+    "typecheck": "tsc --noEmit",
+    "deploy": "ts-node scripts/deploy/index.ts",
+    "deploy:stage": "ts-node scripts/deploy/index.ts stage",
+    "deploy:prod": "ts-node scripts/deploy/index.ts prod",
+    "cleanup": "ts-node scripts/cleanup/index.ts",
+    "cleanup:all": "ts-node scripts/cleanup/index.ts all"
   },
   "dependencies": {
-    "next": "^13.5.9",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "next": "13.4.7",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@types/node": "^20.17.25",
-    "@types/react": "^18.3.19",
-    "eslint": "^8.46.0",
-    "eslint-config-next": "^13.4.12",
-    "typescript": "^5.8.2"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "packageManager": "pnpm@8.6.12"
+    "@svgr/webpack": "^7.0.0",
+    "@types/node": "^20.3.1",
+    "@types/react": "^18.2.12",
+    "@types/react-dom": "^18.2.5",
+    "eslint": "^8.43.0",
+    "eslint-config-next": "^13.4.7",
+    "gh-pages": "^5.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.3"
+  }
 }
