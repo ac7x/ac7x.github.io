@@ -25,6 +25,28 @@ jobs:
         # 检查响应中是否有镜像
         if echo "$RESPONSE" | grep -q '"name": "'"$IMAGE_NAME"'"'; then
           echo "镜像 $IMAGE_NAME 存在"
+          echo "image_exists=true" >> $GITHUB_ENV
         else
           echo "镜像 $IMAGE_NAME 不存在"
+          echo "image_exists=false" >> $GITHUB_ENV
         fi
+
+  docker-cleanup:
+    if: env.image_exists == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 执行 Docker 镜像清理
+      run: |
+        echo "执行 Docker 镜像清理操作"
+        # 清理镜像相关的命令
+
+  docker-build-push:
+    if: env.image_exists == 'false'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 执行 Docker 构建与推送
+      run: |
+        echo "执行 Docker 构建与推送操作"
+        # 构建和推送镜像的命令

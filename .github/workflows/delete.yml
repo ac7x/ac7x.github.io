@@ -23,6 +23,13 @@ jobs:
         # 获取所有非 base.image 的镜像并删除
         docker images --format '{{.Repository}}:{{.Tag}}' | grep -v "base.image" | xargs -I {} docker rmi {}
 
+    - name: 检查是否有 base.image 镜像
+      run: |
+        if [ ! -s images.txt ]; then
+          echo "没有找到符合条件的镜像"
+          exit 0
+        fi
+
     - name: 保留最近 5 个 base.image 镜像
       run: |
         # 排序并保留前五个创建时间最接近的 base.image 镜像
