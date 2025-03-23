@@ -1,50 +1,95 @@
-name: Deploy to Vercel
+name: 構建加速部署映像
 
 on:
   push:
-    branches:
-      - main  # 你要部署的分支
-      - dev  # 你要部署的分支
-      - feature/*  # 你要部署的分支
+    branches: [ main ]
+    paths:
+      - 'Dockerfile'
+      - '.github/workflows/docker-publish.yml'
+    tags: [ 'v*.*.*' ]
+  schedule:
+    # 每月自動構建以獲取最新版本
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: node20-pnpm-vercel
+  # 版本標籤 (年.月.日)
+  VERSION: 2025.3.23
 
 jobs:
-  deploy:
+  build-and-push:
+    name: 構建並發布 Docker 映像
     runs-on: ubuntu-latest
-
+    
     steps:
-      - name: Checkout Repository
+      - name: 檢出程式碼
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: 設置 QEMU
+        uses: docker/setup-qemu-action@v3
         with:
-          node-version: 20
+          platforms: linux/amd64,linux/arm64
 
-      # 安裝 pnpm
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - name: 設置 Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          buildkitd-flags: --debug
 
-      # 使用 pnpm 安裝依賴，並且不使用 lock 文件
-      - name: Install Dependencies
-        run: pnpm install --no-lockfile
+      - name: 登入 DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Debug: 確保 Secrets 被正確讀取
-      - name: Debug Environment Variables
+      - name: 提取 Git 資訊
+        id: git-info
         run: |
-          echo "VERCEL_ORG_ID=${{ secrets.VERCEL_ORG_ID }}"
-          echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }}"
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-      - name: Vercel Deploy
-        uses: amondnet/vercel-action@v25
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          echo "commit_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "branch=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_OUTPUT
+          echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+          
+      - name: 構建並推送 Docker 映像
+        uses: docker/build-push-action@v5
         with:
-          vercel-token: ${{ env.VERCEL_TOKEN }}
-          vercel-project-id: ${{ env.VERCEL_PROJECT_ID }}
-          vercel-org-id: ${{ env.VERCEL_ORG_ID }}
-          vercel-args: "--prod"  # 部署到正式環境
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+            ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+            ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:node20-pnpm-vercel-${{ steps.git-info.outputs.date }}
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+          build-args: |
+            CREATED_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            VERSION=${{ env.VERSION }}
+            REVISION=${{ steps.git-info.outputs.commit_sha }}
+          labels: |
+            org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            org.opencontainers.image.authors=ac7x
+            org.opencontainers.image.url=https://github.com/ac7x/ac7x.github.io
+            org.opencontainers.image.documentation=https://github.com/ac7x/ac7x.github.io/README.md
+            org.opencontainers.image.source=https://github.com/ac7x/ac7x.github.io
+            org.opencontainers.image.version=${{ env.VERSION }}
+            org.opencontainers.image.revision=${{ steps.git-info.outputs.commit_sha }}
+            org.opencontainers.image.title="Node.js 20 + pnpm + Vercel 加速映像"
+            org.opencontainers.image.description="預構建包含 Node.js 20、pnpm 和 Vercel CLI 的映像，用於加速 GitHub Actions 和 Vercel 部署"
+
+      - name: 更新 DockerHub 說明
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}
+          short-description: "Node.js 20 + pnpm + Vercel 預構建映像，用於加速 CI/CD 流程"
+          readme-filepath: ./README.md
+
+      - name: 測試映像
+        run: |
+          docker pull ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+          echo "正在測試映像..."
+          docker run --rm ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest node -v
+          docker run --rm ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest pnpm -v
+          docker run --rm ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest vercel -v
+          echo "測試通過！映像可用於加速部署。"
