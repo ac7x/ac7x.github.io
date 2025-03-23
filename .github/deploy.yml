@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: node20-pnpm-vercel
+  IMAGE_NAME: base image
   # 版本標籤 (年.月.日)
   VERSION: 2025.3.23
 
