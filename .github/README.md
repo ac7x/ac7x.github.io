@@ -6,10 +6,19 @@ ac7x.github.io/
 ├── .github/
 │   ├── workflows/
 │   │   ├── ci-cd.yml              # CI/CD 主要工作流程
-│   │   ├── docker-publish.yml     # Docker 鏡像發布工作流程
-│   │   ├── dependency-review.yml  # 依賴項安全審查
-│   │   ├── codeql-analysis.yml   # 代碼質量分析
-│   │   └── cleanup-artifacts.yml  # 清理過期構建產物
+│   │   ├── build.yml              # 構建流程
+│   │   ├── test.yml               # 測試流程
+│   │   └── deploy.yml             # 部署流程
+│   ├── docker-publish.yml         # Docker 鏡像發布工作流程
+│   │   ├── build-image.yml        # 鏡像構建
+│   │   └── push-image.yml         # 鏡像推送
+│   ├── dependency-review.yml      # 依賴項安全審查
+│   │   ├── npm-audit.yml          # NPM 套件安全掃描
+│   │   └── docker-scan.yml        # Docker 鏡像掃描
+│   ├── codeql-analysis.yml        # 代碼質量分析
+│   │   ├── typescript.yml         # TypeScript 代碼分析
+│   │   └── security.yml           # 安全漏洞檢測
+│   └── cleanup-artifacts.yml      # 清理過期構建產物
 │   └── dependabot.yml             # Dependabot 配置文件
 │
 ├── docker/
@@ -21,9 +30,18 @@ ac7x.github.io/
 │       └── ...                # 測試相關文件
 │
 ├── scripts/
-│   ├── build.ts               # 構建腳本
-│   ├── deploy.ts              # 部署腳本
-│   └── cleanup.ts             # 清理過期資源的腳本
+│   ├── build/
+│   │   ├── index.ts               # 構建入口
+│   │   ├── docker.ts              # Docker 構建
+│   │   └── webpack.ts             # Webpack 構建
+│   ├── deploy/
+│   │   ├── index.ts               # 部署入口
+│   │   ├── vercel.ts              # Vercel 部署
+│   │   └── docker.ts              # Docker 部署
+│   └── cleanup/
+│       ├── index.ts               # 清理入口
+│       ├── cache.ts               # 緩存清理
+│       └── artifacts.ts           # 構建產物清理
 │
 ├── config/
 │   ├── vercel.json            # Vercel 配置文件
