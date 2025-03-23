@@ -93,3 +93,4 @@ jobs:
           docker run --rm ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest pnpm -v
           docker run --rm ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest vercel -v
           echo "測試通過！映像可用於加速部署。"
+          
