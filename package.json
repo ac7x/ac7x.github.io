@@ -9,9 +9,6 @@
       "pnpm": "^9.0.0"
     },
     "devDependencies": {
-      "actions/setup-node": "^4.0.0",
-      "actions/checkout": "^4.0.0",
-      "amondnet/vercel-action": "^25.0.0"
     }
   }
   
