@@ -14,16 +14,16 @@ FROM base AS prod
 # 設置工作目錄
 WORKDIR /app
 
-# 複製 pnpm-lock.yaml 文件
-COPY pnpm-lock.yaml ./
+# 複製 package.json 和 pnpm-lock.yaml
+COPY package*.json pnpm-lock.yaml ./
 
-# 獲取生產依賴
-RUN pnpm fetch --prod
+# 安裝依賴
+RUN pnpm install --frozen-lockfile
 
-# 複製所有文件到工作目錄
+# 複製源代碼
 COPY . .
 
-# 構建項目
+# 構建專案
 RUN pnpm run build
 
 # 最終階段
@@ -32,7 +32,8 @@ FROM base
 # 設置工作目錄
 WORKDIR /app
 
-# 從生產階段複製 node_modules 和構建結果
+# 從生產階段複製必要文件
+COPY --from=prod /app/package.json ./package.json
 COPY --from=prod /app/node_modules ./node_modules
 COPY --from=prod /app/dist ./dist
 
@@ -40,4 +41,4 @@ COPY --from=prod /app/dist ./dist
 EXPOSE 8000
 
 # 啟動應用程序
-CMD [ "pnpm", "start" ]
+CMD ["pnpm", "start"]
