@@ -1,0 +1,46 @@
+version: 2
+updates:
+  # 管理 npm 套件依賴
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    versioning-strategy: "auto"
+    labels:
+      - "dependencies"
+      - "npm"
+    commit-message:
+      prefix: "npm"
+      include: "scope"
+    target-branch: "develop"
+    ignore:
+      # 忽略某些自動更新可能導致重大變更的包
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+
+  # 管理 GitHub Actions 工作流程依賴
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "github-actions"
+      include: "scope"
+
+  # 管理 Docker 映像依賴
+  - package-ecosystem: "docker"
+    directory: "/docker"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "docker"
+    commit-message:
+      prefix: "docker"
+      include: "scope"
