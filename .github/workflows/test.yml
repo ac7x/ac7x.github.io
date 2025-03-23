@@ -1,0 +1,32 @@
+name: Test Docker Image
+
+on:
+  workflow_run:
+    workflows: ["Docker CI/CD"]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  test-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull Docker image
+        run: |
+          docker pull ${{ secrets.DOCKER_USERNAME }}/base-image:latest
+
+      - name: Test Node.js version
+        run: |
+          docker run --rm ${{ secrets.DOCKER_USERNAME }}/base-image:latest node -v
+
+      - name: Test pnpm functionality
+        run: |
+          docker run --rm ${{ secrets.DOCKER_USERNAME }}/base-image:latest pnpm -v
+
+      - name: Test Vercel CLI
+        run: |
+          docker run --rm ${{ secrets.DOCKER_USERNAME }}/base-image:latest vercel -v
+
+      - name: Test package installation
+        run: |
+          docker run --rm -v $(pwd):/app ${{ secrets.DOCKER_USERNAME }}/base-image:latest sh -c "cd /app && pnpm init -y && pnpm add express && node -e 'require(\"express\")'"
