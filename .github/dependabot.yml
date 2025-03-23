@@ -1,0 +1,28 @@
+version: 2
+updates:
+  # 維護 GitHub Actions 的版本
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "actions"
+      - "dependencies"
+
+  # 維護 Docker 映像的版本
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "docker"
+      - "dependencies"
+
+  # 維護 npm 包的版本
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "npm"
+      - "dependencies"
