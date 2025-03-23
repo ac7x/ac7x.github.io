@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v3
       
       - name: 設置 Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       
       - name: 緩存 Docker 層
         uses: actions/cache@v3
