@@ -1,9 +1,10 @@
 name: Docker Check
 
 on:
-  schedule:
-    - cron: "0 * * * *"  # Run every hour
-  workflow_dispatch:  # Allow manual trigger
+  push:
+    branches: 
+      - main  # 當推送到 main 分支時觸發
+  workflow_dispatch:  # 保留手動觸發功能
 
 jobs:
   check-image:
