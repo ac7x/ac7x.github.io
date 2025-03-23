@@ -7,18 +7,18 @@ ac7x.github.io/
 │   ├── workflows/
 │   │   ├── ci-cd.yml              # CI/CD 主要工作流程
 │   │   ├── build.yml              # 構建流程
-│   │   └── deploy.yml             # 部署流程
+│   │   ├── deploy.yml             # 部署流程
 │   │   ├── pages-deploy.yml       # GitHub Pages 部署工作流程
-│   ├── docker-publish.yml         # Docker 鏡像發布工作流程
-│   │   ├── build-image.yml        # 鏡像構建
-│   │   └── push-image.yml         # 鏡像推送
+│   │   ├── docker-publish.yml     # Docker 鏡像發布工作流程
+│   │   ├── build-image.yml        # 鏡像構建工作流程
+│   │   ├── push-image.yml         # 鏡像推送工作流程
 │   │   ├── npm-audit.yml          # NPM 套件安全掃描
-│   │   └── docker-scan.yml        # Docker 鏡像掃描
-│   ├── codeql-analysis.yml        # 代碼質量分析
+│   │   ├── docker-scan.yml        # Docker 鏡像掃描
+│   │   ├── codeql-analysis.yml    # 代碼質量分析工作流程
 │   │   ├── typescript.yml         # TypeScript 代碼分析
-│   │   └── security.yml           # 安全漏洞檢測
-│   └── cleanup-artifacts.yml      # 清理過期構建產物
-│   └── dependabot.yml             # Dependabot 配置文件
+│   │   ├── security.yml           # 安全漏洞檢測
+│   │   └── cleanup-artifacts.yml  # 清理過期構建產物
+│   ├── dependabot.yml             # Dependabot 配置文件
 │   └── CONTRIBUTION_GUIDELINES.md # 貢獻指南
 │
 ├── docker/
@@ -31,10 +31,6 @@ ac7x.github.io/
 │   │   │   └── page.tsx           # 儀表板頁面
 │   │   ├── layout.tsx             # 根佈局
 │   │   └── globals.css            # 全局樣式
-│   ├── pages/                     # Next.js Pages Router 目錄
-│   │   ├── index.tsx              # 首頁
-│   │   ├── dashboard.tsx          # 儀表板頁面
-│   │   └── _app.tsx               # 自定義 App 組件
 │   ├── components/                # React 組件
 │   │   ├── Header.tsx             # 頁面頂部組件
 │   │   ├── Sidebar.tsx            # 側邊欄組件
@@ -45,7 +41,6 @@ ac7x.github.io/
 │   │   │   ├── SystemManager.tsx  # 系統管理組件
 │   │   │   └── NotificationCenter.tsx # 通知與報告組件
 │   ├── styles/                    # 樣式文件
-│   │   ├── globals.css            # 全局樣式
 │   │   └── Home.module.css        # 首頁樣式
 │   ├── utils/                     # 工具函數
 │   │   ├── api.ts                 # API 請求工具
@@ -84,12 +79,16 @@ ac7x.github.io/
 ├── .dockerignore                  # Docker 忽略文件
 ├── .gitignore                     # Git 忽略文件
 ├── package.json                   # 專案依賴配置
-├── pnpm-lock.yaml                 # pnpm 鎖定文件
+├── pnpm-lock.yaml                 # p
+ 鎖定文件
 └── README.md                      # 項目說明文件
 
 
 ## 專案概述
 本專案旨在透過自動化的CI/CD流程來加速Node.js 20、TypeScript、React、Next.js、pnpm與Vercel的部署，並有效提升整體開發和部署效率。同時，專案支援GitHub Pages靜態網站托管，提供高效能且易於維護的Web應用程式開發環境。
+
+## 路由系統說明
+本專案採用 Next.js 的 App Router 路由系統（`app/` 目錄），這是 Next.js 13+ 推薦的新一代路由架構，提供了更好的布局管理、伺服器組件支援和路由載入狀態等優勢。
 
 ## GitHub Actions 工作流程
 ### 自動化部署流程
@@ -125,21 +124,21 @@ on:
 ## TypeScript腳本使用
 ### 構建腳本 (build.ts)
 ```typescript
-yarn build        # 執行產品構建
-yarn build:dev    # 開發環境構建
-yarn build:prod   # 生產環境構建
+pnpm build        # 執行產品構建
+pnpm build:dev    # 開發環境構建
+pnpm build:prod   # 生產環境構建
 ```
 
 ### 部署腳本 (deploy.ts)
 ```typescript
-yarn deploy        # 部署到Vercel
-yarn deploy:stage  # 部署到預覽環境
+pnpm deploy        # 部署到Vercel
+pnpm deploy:stage  # 部署到預覽環境
 ```
 
 ### 清理腳本 (cleanup.ts)
 ```typescript
-yarn cleanup        # 清理構建緩存
-yarn cleanup:all    # 完整清理
+pnpm cleanup        # 清理構建緩存
+pnpm cleanup:all    # 完整清理
 ```
 
 ## 技術特點
@@ -194,5 +193,3 @@ pnpm dev
 
 ## 文件參考
 - [貢獻指南](./CONTRIBUTION_GUIDELINES.md)
-- [技術架構](../docs/architecture.md)
-- [授權說明](../LICENSE)

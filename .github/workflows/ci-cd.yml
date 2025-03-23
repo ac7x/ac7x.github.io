@@ -7,29 +7,30 @@ on:
     branches: [ main ]
 
 jobs:
-  install-dependencies:
+  setup:
+    name: 依賴安裝與緩存
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       
-      - name: Setup Node.js
+      - name: 設置 Node.js 環境
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: 20
           
-      - name: Setup pnpm
+      - name: 安裝 pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
+          run_install: false
           
-      - name: Get pnpm store directory
+      - name: 獲取 pnpm 存儲目錄
         id: pnpm-cache
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
           
-      - name: Setup pnpm cache
+      - name: 設置 pnpm 緩存
         uses: actions/cache@v3
         with:
           path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
@@ -37,136 +38,128 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
             
-      - name: Install dependencies
+      - name: 安裝依賴
         run: pnpm install
-
-  type-check:
-    needs: install-dependencies
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-          
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-          
-      - name: Install dependencies
-        run: pnpm install
-        
-      - name: TypeScript check
-        run: pnpm tsc --noEmit
 
   lint:
-    needs: install-dependencies
+    name: 代碼檢查
+    needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        
-      - name: Setup Node.js
+      - uses: actions/checkout@v3
+      
+      - name: 設置 Node.js 環境
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: 20
           
-      - name: Setup pnpm
+      - name: 安裝 pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
+          run_install: false
           
-      - name: Install dependencies
+      - name: 獲取 pnpm 存儲目錄
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+          
+      - name: 還原 pnpm 緩存
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          
+      - name: 安裝依賴
         run: pnpm install
         
-      - name: Run ESLint
+      - name: ESLint 檢查
         run: pnpm lint
+        
+      - name: TypeScript 類型檢查
+        run: pnpm type-check
 
   build:
-    needs: [type-check, lint]
+    name: 構建應用
+    needs: lint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        
-      - name: Setup Node.js
+      - uses: actions/checkout@v3
+      
+      - name: 設置 Node.js 環境
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: 20
           
-      - name: Setup pnpm
+      - name: 安裝 pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
+          run_install: false
           
-      - name: Install dependencies
+      - name: 還原 pnpm 緩存
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          
+      - name: 安裝依賴
         run: pnpm install
         
-      - name: Build application
+      - name: 建置應用
         run: pnpm build
         
-      - name: Upload build artifacts
+      - name: 上傳構建產物
         uses: actions/upload-artifact@v3
         with:
           name: build-output
-          path: .next/
-          retention-days: 1
+          path: .next
+          retention-days: 7
 
-  docker-build:
-    needs: [build]
+  deploy-preview:
+    name: 部署預覽環境
+    needs: build
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        
-      - name: Login to DockerHub
-        uses: docker/login-action@v2
+      - uses: actions/checkout@v3
+      
+      - name: 下載構建產物
+        uses: actions/download-artifact@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          name: build-output
+          path: .next
           
-      - name: Extract metadata for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: ac7x/nextjs-app
-          tags: |
-            type=ref,event=branch
-            type=semver,pattern={{version}}
-            type=sha
-            
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./docker/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-  deploy-vercel:
-    needs: [build]
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        
-      - name: Deploy to Vercel
+      - name: 部署到 Vercel (預覽)
         uses: amondnet/vercel-action@v20
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           working-directory: ./
-          vercel-args: ${{ github.ref == 'refs/heads/main' && '--prod' || '' }}
+
+  deploy-production:
+    name: 部署生產環境
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: 下載構建產物
+        uses: actions/download-artifact@v3
+        with:
+          name: build-output
+          path: .next
+          
+      - name: 部署到 Vercel (生產)
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+          working-directory: ./
