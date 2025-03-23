@@ -4,5 +4,4 @@ updates:
   - package-ecosystem: "docker"  # 指定 Docker 作为包管理器
     directory: "/"  # Dockerfile 所在的目录，通常是项目根目录
     schedule:
-      interval: "cron"  # 使用 cron 定义自定义计划
-      time: "0 * * * *"  # 每小时检查一次更新 Docker 镜像
+      interval: "hourly"  # 使用预定义的间隔而不是 cron

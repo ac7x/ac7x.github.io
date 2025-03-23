@@ -2,13 +2,15 @@ name: Docker 检查
 
 on:
   schedule:
-    - cron: "0 * * * *"  # 每小时执行一次
-  workflow_dispatch:  # 允许手动触发工作流
+    - cron: "0 * * * *"  # 每小時執行一次
+  workflow_dispatch:  # 允許手動觸發工作流
 
 jobs:
   check-image:
     runs-on: ubuntu-latest
-
+    outputs:
+      image_exists: ${{ steps.check_image.outputs.exists }}
+    
     steps:
     - name: 登录 DockerHub
       uses: docker/login-action@v2
@@ -19,33 +21,43 @@ jobs:
     - name: 检查镜像是否存在
       id: check_image
       run: |
-        IMAGE_NAME="base.image"
-        RESPONSE=$(curl -s -H "Authorization: Bearer ${{ secrets.DOCKER_TOKEN }}" "https://hub.docker.com/v2/repositories/${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}/")
+        IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/base-image"
+        RESPONSE=$(curl -s -H "Authorization: Bearer ${{ secrets.DOCKER_TOKEN }}" "https://hub.docker.com/v2/repositories/${IMAGE_NAME}/")
         echo "RESPONSE: $RESPONSE"
-        if echo "$RESPONSE" | grep -q '"name": "'"$IMAGE_NAME"'"'; then
+        if echo "$RESPONSE" | grep -q '"name"'; then
           echo "镜像 $IMAGE_NAME 存在"
-          echo "image_exists=true" >> $GITHUB_ENV
+          echo "exists=true" >> $GITHUB_OUTPUT
         else
           echo "镜像 $IMAGE_NAME 不存在"
-          echo "image_exists=false" >> $GITHUB_ENV
+          echo "exists=false" >> $GITHUB_OUTPUT
         fi
 
   docker-cleanup:
-    if: env.image_exists == 'true'
+    needs: check-image
+    if: needs.check-image.outputs.image_exists == 'true'
     runs-on: ubuntu-latest
 
     steps:
     - name: 执行 Docker 清理
       run: |
         echo "执行 Docker 镜像清理操作"
-        # 清理镜像相关的命令
 
   docker-build-push:
-    if: env.image_exists == 'false'
+    needs: check-image
+    if: needs.check-image.outputs.image_exists == 'false'
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout 仓库代码
+      uses: actions/checkout@v2
+    
+    - name: 登录 DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
     - name: 执行 Docker 构建与推送
       run: |
-        echo "执行 Docker 构建与推送操作"
-        # 构建和推送镜像的命令
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/base-image:latest .
+        docker push ${{ secrets.DOCKER_USERNAME }}/base-image:latest

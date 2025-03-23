@@ -22,8 +22,14 @@ jobs:
 
     - name: 构建 Docker 镜像
       run: |
-        docker build -t base.image:latest .
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/base-image:latest .
+
+    - name: 获取所有 Docker 镜像列表
+      id: images
+      run: |
+        # 获取所有镜像并过滤出名称为用户命名空间下的 base-image 的镜像
+        docker images --format '{{.Repository}}:{{.Tag}} {{.CreatedAt}}' | grep "${{ secrets.DOCKER_USERNAME }}/base-image" > images.txt
 
     - name: 推送 Docker 镜像
       run: |
-        docker push base.image:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/base-image:latest
