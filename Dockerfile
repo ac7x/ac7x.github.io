@@ -1,33 +1,23 @@
-# 基礎映像
 FROM node:20-alpine
 
-# 安裝基本工具及 pnpm
 RUN apk add --no-cache git curl bash jq python3 make g++ && \
     npm install -g pnpm@latest
 
-# 使用 pnpm 安裝 Vercel CLI
 RUN pnpm add -g vercel@latest
 
-# 使用 pnpm 安裝 GitHub Actions 常用工具
 RUN pnpm add -g @actions/core @actions/github @actions/exec @actions/io
 
-# 預先配置 pnpm
 RUN pnpm config set store-dir /.pnpm-store
 
-# 建立工作目錄
 WORKDIR /app
 
-# 設置 PATH
 ENV PATH="/app/node_modules/.bin:${PATH}"
 
-# 暴露常用端口
 EXPOSE 8000
 
-# 顯示已安裝的版本信息
 RUN echo "Node: $(node -v)" && \
     echo "npm: $(npm -v)" && \
     echo "pnpm: $(pnpm -v)" && \
     echo "Vercel: $(vercel -v)"
 
-# 預設命令
 CMD ["bash"]
