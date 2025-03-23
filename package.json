@@ -1,5 +1,5 @@
 {
-    "name": "deploy-to-vercel",
+    "name": "ac7x.github.io",
     "version": "1.0.0",
     "scripts": {
       "up": "git add --all && git commit -m \"Initial commit\" && git push -u origin main",

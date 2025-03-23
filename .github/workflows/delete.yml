@@ -1,6 +1,6 @@
-name: Docker 清理
+name: Docker Cleanup
 
-# 手动触发工作流
+# Manual trigger
 on:
   workflow_dispatch: 
 
@@ -9,35 +9,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 登录 DockerHub
+    - name: Log in to DockerHub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: 获取所有 Docker 镜像列表
+    - name: List all Docker images
       id: images
       run: |
-        # 获取所有镜像并过滤出名称为 base.image 的镜像
+        # List all images and filter out images named base.image
         docker images --format '{{.Repository}}:{{.Tag}} {{.CreatedAt}}' | grep "base.image" > images.txt
-        # 获取所有非 base.image 的镜像并删除
+        # List all images except base.image and delete them
         docker images --format '{{.Repository}}:{{.Tag}}' | grep -v "base.image" | xargs -I {} docker rmi {}
 
-    - name: 检查是否有 base.image 镜像
+    - name: Check if there are any base.image images
       run: |
         if [ ! -s images.txt ]; then
-          echo "没有找到符合条件的镜像"
+          echo "No matching images found"
           exit 0
         fi
 
-    - name: 保留最近 5 个 base.image 镜像
+    - name: Keep the latest 5 base.image images
       run: |
-        # 排序并保留前五个创建时间最接近的 base.image 镜像
+        # Sort and keep the top 5 most recently created base.image images
         top_images=$(cat images.txt | sort -k2 -r | head -n 5)
-        echo "保留的镜像："
+        echo "Retained images:"
         echo "$top_images"
         
-        # 获取保留镜像的名称并删除其他镜像
+        # Get the names of the retained images and delete the others
         all_images=$(cat images.txt)
         for image in $all_images; do
           if ! echo "$top_images" | grep -q "$image"; then

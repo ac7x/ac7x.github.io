@@ -1,7 +1,7 @@
 version: 2
 
 updates:
-  - package-ecosystem: "docker"  # 指定 Docker 作为包管理器
-    directory: "/"  # Dockerfile 所在的目录，通常是项目根目录
+  - package-ecosystem: "docker"  # Specify Docker as the package manager
+    directory: "/"  # Directory where the Dockerfile is located, usually the project root
     schedule:
-      interval: "hourly"  # 使用预定义的间隔而不是 cron
+      interval: "hourly"  # Use predefined interval instead of cron
