@@ -1,11 +1,7 @@
 name: Docker 构建与推送
 
-# 手动触发工作流或通过其他工作流触发
 on:
   workflow_dispatch:  # 允许手动触发工作流
-  # 也可以添加定时任务触发等事件：
-  # schedule:
-  #   - cron: "0 0 * * *"  # 示例定时任务，每天执行一次
 
 jobs:
   docker-build-push:
@@ -14,6 +10,9 @@ jobs:
     steps:
     - name: Checkout 仓库代码
       uses: actions/checkout@v2
+
+    - name: 检查代码是否拉取
+      run: ls -la
 
     - name: 登录 DockerHub
       uses: docker/login-action@v2
