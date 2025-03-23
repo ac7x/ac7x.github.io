@@ -1,96 +1,30 @@
-name: 構建加速部署映像
+name: Docker 构建与推送
 
+# 手动触发工作流或通过其他工作流触发
 on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'Dockerfile'
-      - '.github/workflows/docker-publish.yml'
-    tags: [ 'v*.*.*' ]
-  schedule:
-    # 每月自動構建以獲取最新版本
-    - cron: '0 0 1 * *'
-  workflow_dispatch:
-
-env:
-  IMAGE_NAME: base.image
-  # 版本標籤 (年.月.日)
-  VERSION: 2025.3.23
+  workflow_dispatch:  # 允许手动触发工作流
+  # 也可以添加定时任务触发等事件：
+  # schedule:
+  #   - cron: "0 0 * * *"  # 示例定时任务，每天执行一次
 
 jobs:
-  build-and-push:
-    name: 構建並發布 Docker 映像
+  docker-build-push:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - name: 檢出程式碼
-        uses: actions/checkout@v4
+    - name: Checkout 仓库代码
+      uses: actions/checkout@v2
 
-      - name: 設置 QEMU
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: linux/amd64,linux/arm64
+    - name: 登录 DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: 設置 Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          buildkitd-flags: --debug
+    - name: 构建 Docker 镜像
+      run: |
+        docker build -t base.image:latest .
 
-      - name: 登入 DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: 提取 Git 資訊
-        id: git-info
-        run: |
-          echo "commit_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-          echo "branch=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_OUTPUT
-          echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
-          
-      - name: 構建並推送 Docker 映像
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: |
-            ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-            ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-            ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:node20-pnpm-vercel-${{ steps.git-info.outputs.date }}
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
-          build-args: |
-            CREATED_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-            VERSION=${{ env.VERSION }}
-            REVISION=${{ steps.git-info.outputs.commit_sha }}
-          labels: |
-            org.opencontainers.image.created=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
-            org.opencontainers.image.authors=ac7x
-            org.opencontainers.image.url=https://github.com/ac7x/ac7x.github.io
-            org.opencontainers.image.documentation=https://github.com/ac7x/ac7x.github.io/README.md
-            org.opencontainers.image.source=https://github.com/ac7x/ac7x.github.io
-            org.opencontainers.image.version=${{ env.VERSION }}
-            org.opencontainers.image.revision=${{ steps.git-info.outputs.commit_sha }}
-            org.opencontainers.image.title="Node.js 20 + pnpm + Vercel 加速映像"
-            org.opencontainers.image.description="預構建包含 Node.js 20、pnpm 和 Vercel CLI 的映像，用於加速 GitHub Actions 和 Vercel 部署"
-
-      - name: 更新 DockerHub 說明
-        uses: peter-evans/dockerhub-description@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}
-          short-description: "Node.js 20 + pnpm + Vercel 預構建映像，用於加速 CI/CD 流程"
-          readme-filepath: ./README.md
-
-      - name: 測試映像
-        run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-          echo "正在測試映像..."
-          docker run --rm ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest node -v
-          docker run --rm ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest pnpm -v
-          docker run --rm ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest vercel -v
-          echo "測試通過！映像可用於加速部署。"
-          
+    - name: 推送 Docker 镜像
+      run: |
+        docker push base.image:latest

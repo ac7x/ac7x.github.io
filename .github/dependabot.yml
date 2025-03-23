@@ -1,28 +1,7 @@
 version: 2
+
 updates:
-  # 維護 GitHub Actions 的版本
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: "docker"  # 指定 Docker 作为包管理器
+    directory: "/"  # Dockerfile 所在的目录，通常是项目根目录
     schedule:
-      interval: "weekly"
-    labels:
-      - "actions"
-      - "dependencies"
-
-  # 維護 Docker 映像的版本
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    labels:
-      - "docker"
-      - "dependencies"
-
-  # 維護 npm 包的版本
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    labels:
-      - "npm"
-      - "dependencies"
+      interval: "hourly"  # 每小时检查更新 Docker 镜像
