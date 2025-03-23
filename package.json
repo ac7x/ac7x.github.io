@@ -1,14 +1,13 @@
 {
-    "name": "ac7x.github.io",
-    "version": "1.0.0",
-    "scripts": {
-      "up": "git add --all && git commit -m \"Initial commit\" && git push -u origin main",
-      "deploy": "echo 'This project is deployed via GitHub Actions and Vercel.'"
-    },
-    "dependencies": {
-      "pnpm": "^9.0.0"
-    },
-    "devDependencies": {
-    }
+  "name": "ac7x.github.io",
+  "version": "1.0.0",
+  "scripts": {
+    "up": "git add --all && git commit -m \"Initial commit\" && git push -u origin main",
+    "deploy": "echo 'This project is deployed via GitHub Actions and Vercel.'"
+  },
+  "dependencies": {
+    "node": "^20",
+    "pnpm": "^9",
+    "vercel": "^41"
   }
-  
+}
