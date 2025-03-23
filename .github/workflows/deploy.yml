@@ -3,6 +3,10 @@ name: Docker Build and Push
 on:
   workflow_dispatch:  # Allow manual trigger
 
+  push:
+    branches: 
+      - main  # 當推送到 main 分支時觸發
+
 jobs:
   docker-build-push:
     runs-on: ubuntu-latest
