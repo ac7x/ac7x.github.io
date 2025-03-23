@@ -7,7 +7,7 @@
       "deploy": "echo 'This project is deployed via GitHub Actions and Vercel.'"
     },
     "dependencies": {
-      "pnpm": "^9.0.0"
+      "pnpm": "^10.6.5"
     },
     "devDependencies": {
       "actions/setup-node": "^4.0.0",
