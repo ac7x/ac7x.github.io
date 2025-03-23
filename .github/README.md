@@ -21,9 +21,6 @@ ac7x.github.io/
 │   ├── dependabot.yml             # Dependabot 配置文件
 │   └── CONTRIBUTION_GUIDELINES.md # 貢獻指南
 │
-├── docker/
-│   └── Dockerfile                 # 多階段構建的 Dockerfile
-│
 ├── src/
 │   ├── app/                       # Next.js App Router 目錄
 │   │   ├── page.tsx               # 首頁
@@ -70,17 +67,14 @@ ac7x.github.io/
 │       ├── cache.ts               # 緩存清理
 │       └── artifacts.ts           # 構建產物清理
 │
-├── config/
-│   ├── next.config.js             # Next.js 配置文件
-│   ├── vercel.json                # Vercel 配置文件
-│   ├── node-config.json           # Node.js 配置文件
-│   └── tsconfig.json              # TypeScript 配置文件
-│
+├── Dockerfile                     # 多階段構建的 Dockerfile
 ├── .dockerignore                  # Docker 忽略文件
 ├── .gitignore                     # Git 忽略文件
+├── next.config.js                 # Next.js 配置文件
+├── vercel.json                    # Vercel 配置文件
+├── tsconfig.json                  # TypeScript 配置文件
 ├── package.json                   # 專案依賴配置
-├── pnpm-lock.yaml                 # p
- 鎖定文件
+├── pnpm-lock.yaml                 # pnpm 鎖定文件
 └── README.md                      # 項目說明文件
 
 
