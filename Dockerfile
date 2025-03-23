@@ -3,7 +3,8 @@ FROM node:20-alpine
 RUN apk add --no-cache git curl bash jq python3 make g++ && \
     npm install -g pnpm@latest
 
-# 設置 pnpm 全局二進制目錄
+# 設置 SHELL 環境變數並設置 pnpm 全局二進制目錄
+ENV SHELL=/bin/sh
 RUN pnpm setup
 
 RUN pnpm add -g vercel@latest
