@@ -1,0 +1,59 @@
+# 依賴項目錄
+node_modules/
+.pnpm-store/
+
+# 構建輸出
+dist/
+build/
+out/
+.output/
+.nuxt/
+
+# 環境變數
+.env
+.env.local
+.env.*.local
+
+# 日誌文件
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 編輯器和 IDE 配置
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# 快取目錄
+.cache/
+.temp/
+.tmp/
+.eslintcache
+.stylelintcache
+
+# 覆蓋率報告
+coverage/
+
+# 臨時文件
+*.tmp
+*.bak
+*~
+
+# 本地配置文件
+*.local
+
+# Docker 相關
+docker-compose.override.yml
