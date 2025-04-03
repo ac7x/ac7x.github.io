@@ -1,6 +1,6 @@
 # Prisma 框架規則
 
-> 生成版本: 2025.04.03-01d554c
+> 生成版本: 2025.04.03-12ea7ce
 
 這是 prisma 框架的適配規則文檔。
 
@@ -8,7 +8,8 @@
 
 | 規則 ID | 錯誤等級 | 說明 |
 |--------|---------|------|
-| require-select | block | Prisma query must explicitly specify select/include - Prisma 查詢必須明確指定 select/include |
+| require-select | block | Prisma 查询必须明确指定 select/include - 防止数据泄露 |
+| no-client-prisma | error | 客户端禁止直接调用 Prisma - 请通过 Server Actions 执行 |
 
 ## 詳細說明
 
@@ -16,7 +17,7 @@
 ### require-select
 
 - **錯誤等級**: block
-- **說明**: Prisma query must explicitly specify select/include - Prisma 查詢必須明確指定 select/include
+- **說明**: Prisma 查询必须明确指定 select/include - 防止数据泄露
 - **文檔**: [查看詳情](https://ac7x.github.io/prisma-security)
 - **模式**: `prisma\.\w+\.\w+\(\s*\{[^}]*?(?<!select|include)\s*\}\)`
 
@@ -31,8 +32,18 @@ await prisma.user.findMany({ where: { active: true } })
 **修復後的範例**:
 
 ```javascript
-await prisma.user.findMany({ where: { active: true }, select: { id: true, name: true } })
+await prisma.user.findMany({ where: { active: true }, select: { id: true } })
 ```
+
+
+
+
+### no-client-prisma
+
+- **錯誤等級**: error
+- **說明**: 客户端禁止直接调用 Prisma - 请通过 Server Actions 执行
+
+- **模式**: `prisma\.\w+\.`
 
 
 

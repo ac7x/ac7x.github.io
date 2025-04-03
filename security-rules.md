@@ -1,6 +1,6 @@
 # Security 框架規則
 
-> 生成版本: 2025.04.03-01d554c
+> 生成版本: 2025.04.03-12ea7ce
 
 這是 security 框架的適配規則文檔。
 
@@ -8,7 +8,8 @@
 
 | 規則 ID | 錯誤等級 | 說明 |
 |--------|---------|------|
-| no-eval | block | Avoid using eval() as it poses security risks - eval() 函數存在安全風險，應避免使用 |
+| no-eval | block | 禁止使用 eval() - 存在代码注入风险 |
+| no-env-leak | error | 禁止在客户端暴露敏感环境变量 - 仅允许 NEXT_PUBLIC_ 前缀 |
 
 ## 詳細說明
 
@@ -16,7 +17,7 @@
 ### no-eval
 
 - **錯誤等級**: block
-- **說明**: Avoid using eval() as it poses security risks - eval() 函數存在安全風險，應避免使用
+- **說明**: 禁止使用 eval() - 存在代码注入风险
 - **文檔**: [查看詳情](https://ac7x.github.io/security-rules)
 - **模式**: `eval\(|Function\(['"]return`
 
@@ -34,10 +35,19 @@ function runCode(code) {
 
 ```javascript
 function runCode(code) {
-  // Use a safer alternative or validate inputs
   return JSON.parse(code);
 }
 ```
+
+
+
+
+### no-env-leak
+
+- **錯誤等級**: error
+- **說明**: 禁止在客户端暴露敏感环境变量 - 仅允许 NEXT_PUBLIC_ 前缀
+
+- **模式**: `process\.env\.(?!NEXT_PUBLIC_)`
 
 
 

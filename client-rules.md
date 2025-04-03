@@ -1,6 +1,6 @@
 # Client 框架規則
 
-> 生成版本: 2025.04.03-01d554c
+> 生成版本: 2025.04.03-12ea7ce
 
 這是 client 框架的適配規則文檔。
 
@@ -8,7 +8,8 @@
 
 | 規則 ID | 錯誤等級 | 說明 |
 |--------|---------|------|
-| no-document-access | warning | Direct document access should be wrapped in useEffect or similar - 直接訪問 document 對象應在 useEffect 等生命週期中進行 |
+| no-document-access | warning | 直接访问 DOM 需包裹在 useEffect 中 - 避免 hydration 错误 |
+| no-server-imports | error | 客户端禁止直接导入服务端模块或 Prisma - 请使用 Server Actions |
 
 ## 詳細說明
 
@@ -16,7 +17,7 @@
 ### no-document-access
 
 - **錯誤等級**: warning
-- **說明**: Direct document access should be wrapped in useEffect or similar - 直接訪問 document 對象應在 useEffect 等生命週期中進行
+- **說明**: 直接访问 DOM 需包裹在 useEffect 中 - 避免 hydration 错误
 
 - **模式**: `document\.`
 
@@ -33,6 +34,16 @@ const width = document.body.clientWidth;
 ```javascript
 useEffect(() => { setWidth(document.body.clientWidth); }, []);
 ```
+
+
+
+
+### no-server-imports
+
+- **錯誤等級**: error
+- **說明**: 客户端禁止直接导入服务端模块或 Prisma - 请使用 Server Actions
+
+- **模式**: `from\s+['"]@/(server|prisma)`
 
 
 
