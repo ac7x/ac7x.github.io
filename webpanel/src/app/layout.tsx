@@ -14,12 +14,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-TW">
-      <body className="bg-gray-50 min-h-screen">
+      <body className="bg-slate-50 min-h-screen">
         <div className="flex min-h-screen">
           <Sidebar />
-          <div className="flex-1">
+          <div className="flex-1 overflow-hidden">
             <Header />
-            <main className="p-4">
+            <main className="p-6 h-[calc(100vh-4rem)] overflow-y-auto">
               {children}
             </main>
           </div>
