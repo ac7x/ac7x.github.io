@@ -14,13 +14,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-TW">
-      <body className="bg-slate-50 min-h-screen font-sans text-gray-900 antialiased">
+      <body className="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen font-sans text-gray-900 antialiased">
         <div className="flex min-h-screen">
           <Sidebar />
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 ml-64">
             <Header />
-            <main className="p-6 h-[calc(100vh-4rem)] overflow-y-auto">
-              {children}
+            <main className="p-8 min-h-[calc(100vh-4rem)] animate-fade-in">
+              <div className="max-w-7xl mx-auto">
+                {children}
+              </div>
             </main>
           </div>
         </div>
