@@ -1,0 +1,1 @@
+window.APP_VERSION = '2025.04.03-f6180d0';

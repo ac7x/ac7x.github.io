@@ -1,4 +1,0 @@
-# scripts/bump-version.sh
-# 版本格式: 日期-提交哈希
-# 此檔案由 deploy-docs.yml 工作流程自動更新
-2023.12.01-initial
