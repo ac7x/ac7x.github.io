@@ -1,17 +1,25 @@
-# 在 .github/workflows/update-prompts.yml 中
-on:
-  push:
-    branches:
-      - main
+name: Validate Prompt Rules
+on: [push, pull_request]
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate JSON Syntax
+      
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Verify Signatures
         run: |
-          find . -name "*.json" | xargs jq empty
-      - name: Test Rule Impact
+          npm install crypto-js
+          node scripts/validate-signatures.js
+        env:
+          PUBLIC_KEY: ${{ secrets.PUBLIC_KEY }}
+
+      - name: Test Rule Examples
         run: |
-          ./scripts/test-prompt-changes.sh
+          npm install @playwright/test
+          npx playwright test scripts/test-rules.spec.js

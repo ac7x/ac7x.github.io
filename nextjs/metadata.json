@@ -1,0 +1,12 @@
+{
+    "framework": "nextjs14",
+    "minVersion": "14.1.0",
+    "compatibility": {
+      "react": "^18.2.0",
+      "typescript": "^5.1.3"
+    },
+    "dependencyChecks": {
+      "required": ["@prisma/client", "next-auth"],
+      "conflicts": ["redux"]
+    }
+  }

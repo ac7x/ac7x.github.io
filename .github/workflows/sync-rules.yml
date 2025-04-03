@@ -1,0 +1,37 @@
+name: Sync Prompt Rules
+
+on:
+  workflow_dispatch:  # 手動觸發
+  schedule:
+    - cron: '0 0 * * *'  # 每日同步
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Fetch Rules
+        run: |
+          git clone https://github.com/ac7x/ai-prompts-repo
+          mkdir -p .vscode/prompts
+          cp -r ai-prompts-repo/nextjs/* .vscode/prompts/
+          echo "$(date +%Y-%m-%d)" > .prompt-version
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit Changes
+        run: |
+          git add .vscode/prompts .prompt-version
+          git diff --cached --quiet || git commit -m "chore: update prompt rules"
+
+      - name: Push Changes
+        run: |
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

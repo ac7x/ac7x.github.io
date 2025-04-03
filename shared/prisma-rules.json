@@ -1,0 +1,11 @@
+{
+    "rules": [
+      {
+        "id": "require-select",
+        "pattern": "prisma\\.\\w+\\.\\w+\\(\\s*\\{[^}]*?(?<!select|include)\\s*\\}\\)",
+        "errorLevel": "block",
+        "message": "Prisma query must explicitly specify select/include",
+        "documentation": "https://ac7x.github.io/prisma-security"
+      }
+    ]
+  }
