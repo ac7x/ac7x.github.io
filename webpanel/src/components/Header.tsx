@@ -11,15 +11,15 @@ export default function Header() {
   }
   
   return (
-    <header className="bg-white/80 shadow-sm h-16 p-4 sticky top-0 z-10 backdrop-blur-md">
-      <div className="flex justify-between items-center max-w-7xl mx-auto">
+    <header className="bg-white/80 shadow-sm h-16 p-4 sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+      <div className="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div>
           <h2 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
             框架適配提示詞倉儲
           </h2>
         </div>
         <div className="flex items-center space-x-4">
-          <form onSubmit={handleSearch} className="relative">
+          <form onSubmit={handleSearch} className="relative hidden sm:block">
             <input
               type="search"
               placeholder="搜尋規則與提示詞..."
