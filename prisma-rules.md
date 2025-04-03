@@ -6,7 +6,7 @@
 
 | 規則 ID | 錯誤等級 | 說明 |
 |--------|---------|------|
-| require-select | block | Prisma query must explicitly specify select/include |
+| require-select | block | Prisma query must explicitly specify select/include - Prisma 查詢必須明確指定 select/include |
 
 ## 詳細說明
 
@@ -14,7 +14,7 @@
 ### require-select
 
 - **錯誤等級**: block
-- **說明**: Prisma query must explicitly specify select/include
+- **說明**: Prisma query must explicitly specify select/include - Prisma 查詢必須明確指定 select/include
 - **文檔**: [查看詳情](https://ac7x.github.io/prisma-security)
 - **模式**: `prisma\.\w+\.\w+\(\s*\{[^}]*?(?<!select|include)\s*\}\)`
 
