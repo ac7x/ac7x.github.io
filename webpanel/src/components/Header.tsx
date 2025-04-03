@@ -27,7 +27,7 @@ export default function Header() {
             />
           </form>
           <button className="bg-blue-600 text-white px-4 py-2 rounded-md">
-            版本: 2023.12.1
+            版本: {typeof window !== 'undefined' && (window as any).APP_VERSION || '2023.12.1'}
           </button>
         </div>
       </div>

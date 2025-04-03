@@ -1,20 +1,26 @@
 const crypto = require('crypto');
 const fs = require('fs');
+const path = require('path');
 
-const PRIVATE_KEY = process.env.SIGNING_KEY;
-const FILES_TO_SIGN = [
-  'nextjs/server-rules.json',
-  'shared/prisma-rules.json'
-];
+// 使用檔案雜湊替代簽名
+const RULES_DIR = path.join(__dirname, '../rules');
+const HASH_FILE = path.join(RULES_DIR, 'checksums.json');
 
-function signFile(content) {
-  const signer = crypto.createSign('RSA-SHA256');
-  signer.update(content);
-  return signer.sign(PRIVATE_KEY, 'base64');
+function generateChecksums() {
+  const ruleFiles = fs.readdirSync(RULES_DIR)
+    .filter(file => file.endsWith('.json') && file !== 'checksums.json');
+  
+  const checksums = {};
+  
+  ruleFiles.forEach(file => {
+    const filePath = path.join(RULES_DIR, file);
+    const content = fs.readFileSync(filePath, 'utf-8');
+    const hash = crypto.createHash('sha256').update(content).digest('hex');
+    checksums[file] = hash;
+  });
+  
+  fs.writeFileSync(HASH_FILE, JSON.stringify(checksums, null, 2));
+  console.log(`✅ 已生成檔案雜湊值，共 ${ruleFiles.length} 個檔案`);
 }
 
-FILES_TO_SIGN.forEach(file => {
-  const content = fs.readFileSync(file, 'utf-8');
-  const signature = signFile(content);
-  fs.writeFileSync(`${file}.sig`, signature);
-});
+generateChecksums();

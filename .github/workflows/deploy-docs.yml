@@ -24,14 +24,26 @@ jobs:
           cd webpanel
           npm install
 
+      - name: Generate Version Info
+        run: |
+          echo "$(date +%Y.%m.%d)-$(git rev-parse --short HEAD)" > core/version.txt
+          echo "window.APP_VERSION = '$(cat core/version.txt)';" > webpanel/public/version.js
+
       - name: Build Docs
-        run: npx typedoc core/rules/*.json --out ./docs
+        run: |
+          mkdir -p docs
+          node core/scripts/generate-docs.js
 
       - name: Build Web Panel
         run: |
           cd webpanel
+          # 確認 next.config.js 或 next.config.mjs 存在
+          if [ ! -f next.config.js ] && [ ! -f next.config.mjs ]; then
+            echo "創建 next.config.js"
+            echo 'module.exports = { output: "export", images: { unoptimized: true } };' > next.config.js
+          fi
           npm run build
-          npm run export
+          mkdir -p ../docs/webpanel
           cp -r out/* ../docs/webpanel/
 
       - name: Create index redirect

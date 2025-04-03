@@ -1,0 +1,6 @@
+{
+  "server.json": "檔案雜湊值將由腳本產生",
+  "prisma.json": "檔案雜湊值將由腳本產生",
+  "security.json": "檔案雜湊值將由腳本產生",
+  "client.json": "檔案雜湊值將由腳本產生"
+}
