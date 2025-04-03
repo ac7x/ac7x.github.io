@@ -2,7 +2,7 @@ import { frameworks } from '@/lib/data'
 
 export default function FrameworksPage() {
   return (
-    <div className="animate-fade">
+    <div className="animate-fade-in">
       {/* 頁面標題區域 */}
       <div className="mb-10 border-b border-gray-200 pb-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between">
@@ -23,7 +23,7 @@ export default function FrameworksPage() {
         </div>
       </div>
       
-      {/* 框架卡片網格 */}
+      {/* 框架卡片網格 - 改為純展示版本，無點擊功能 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {frameworks.map(framework => (
           <FrameworkDetailCard 
@@ -37,7 +37,7 @@ export default function FrameworksPage() {
       </div>
       
       {/* 技術圖表區域 */}
-      <div className="mt-16 card-base p-8">
+      <div className="mt-16 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
         <h2 className="text-2xl font-bold mb-6">框架相容性概覽</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -78,7 +78,7 @@ function FrameworkDetailCard({ name, version, rulesCount, description }: {
   description: string;
 }) {
   return (
-    <div className="card-base p-7 hover-scale">
+    <div className="bg-white p-7 rounded-2xl shadow-sm border border-gray-100 cursor-default flex flex-col h-full">
       {/* 框架標誌和標題 */}
       <div className="flex items-start justify-between mb-4">
         <div>

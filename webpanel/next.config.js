@@ -4,10 +4,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  trailingSlash: true,
-  compress: true,
-  poweredByHeader: false,
   reactStrictMode: true,
+  basePath: process.env.NODE_ENV === 'production' ? '/webpanel' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/webpanel/' : '',
 }
 
 module.exports = nextConfig;
