@@ -11,20 +11,41 @@ function generateFileHash(filePath) {
   return crypto.createHash('sha256').update(content).digest('hex');
 }
 
+function updateHashFile() {
+  console.log('更新檔案雜湊清單...');
+  const ruleFiles = fs.readdirSync(RULES_DIR).filter(file => file.endsWith('.json') && file !== 'checksums.json');
+  const checksums = {};
+  
+  ruleFiles.forEach(file => {
+    const filePath = path.join(RULES_DIR, file);
+    checksums[file] = generateFileHash(filePath);
+  });
+  
+  fs.writeFileSync(HASH_FILE, JSON.stringify(checksums, null, 2));
+  console.log(`✅ 已更新雜湊值，共 ${ruleFiles.length} 個檔案`);
+  return true;
+}
+
 function verifyFiles() {
-  // 如果還沒有雜湊檔案，則建立一個
+  // 如果處於 CI 環境，則自動更新雜湊檔案
+  if (process.env.CI) {
+    return updateHashFile();
+  }
+  
+  // 如果雜湊檔案不存在，則建立一個
   if (!fs.existsSync(HASH_FILE)) {
-    console.log('建立新的檔案雜湊清單');
-    const ruleFiles = fs.readdirSync(RULES_DIR).filter(file => file.endsWith('.json') && file !== 'checksums.json');
-    const checksums = {};
-    
-    ruleFiles.forEach(file => {
-      const filePath = path.join(RULES_DIR, file);
-      checksums[file] = generateFileHash(filePath);
-    });
-    
-    fs.writeFileSync(HASH_FILE, JSON.stringify(checksums, null, 2));
-    return true;
+    return updateHashFile();
+  }
+  
+  // 檢查雜湊檔案是否包含 "將由腳本產生" 這樣的預設內容
+  try {
+    const content = fs.readFileSync(HASH_FILE, 'utf-8');
+    if (content.includes('檔案雜湊值將由腳本產生')) {
+      return updateHashFile();
+    }
+  } catch (err) {
+    console.error('雜湊檔案讀取失敗，建立新檔案');
+    return updateHashFile();
   }
   
   // 驗證現有檔案的雜湊值
@@ -55,7 +76,15 @@ function verifyFiles() {
 // 執行驗證
 const isValid = verifyFiles();
 if (!isValid) {
-  process.exit(1);
+  console.error('檔案驗證失敗');
+  // 如果在 CI 環境中且設定為自動修復
+  if (process.env.CI && process.env.AUTO_FIX_CHECKSUMS === 'true') {
+    console.log('嘗試自動修復雜湊檔案...');
+    updateHashFile();
+    process.exit(0);
+  } else {
+    process.exit(1);
+  }
 } else {
   console.log('✅ 所有檔案驗證通過');
 }

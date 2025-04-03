@@ -27,6 +27,7 @@ jobs:
       - name: Generate Version Info
         run: |
           echo "$(date +%Y.%m.%d)-$(git rev-parse --short HEAD)" > core/version.txt
+          mkdir -p webpanel/public
           echo "window.APP_VERSION = '$(cat core/version.txt)';" > webpanel/public/version.js
 
       - name: Build Docs
@@ -38,7 +39,7 @@ jobs:
         run: |
           cd webpanel
           # 確認 next.config.js 或 next.config.mjs 存在
-          if [ ! -f next.config.js ] && [ ! -f next.config.mjs ]; then
+          if [ ! -f next.config.js ] && [ ! -f next.config.mjs ] && [ ! -f next.config.ts ]; then
             echo "創建 next.config.js"
             echo 'module.exports = { output: "export", images: { unoptimized: true } };' > next.config.js
           fi
