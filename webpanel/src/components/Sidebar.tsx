@@ -8,6 +8,7 @@ const menuItems = [
   { name: '框架', path: '/frameworks', icon: '🧩' },
   { name: '提示詞', path: '/prompts', icon: '📝' },
   { name: '規則管理', path: '/rules', icon: '⚙️' },
+  { name: '進化中心', path: '/evolution', icon: '🧠' }, // 新增進化中心
   { name: '文件中心', path: '/docs', icon: '📚' },
 ]
 
