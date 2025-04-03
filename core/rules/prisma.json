@@ -5,7 +5,7 @@
       "id": "require-select",
       "pattern": "prisma\\.\\w+\\.\\w+\\(\\s*\\{[^}]*?(?<!select|include)\\s*\\}\\)",
       "errorLevel": "block",
-      "message": "Prisma query must explicitly specify select/include",
+      "message": "Prisma query must explicitly specify select/include - Prisma 查詢必須明確指定 select/include",
       "documentation": "https://ac7x.github.io/prisma-security",
       "examples": {
         "invalid": "await prisma.user.findMany({ where: { active: true } })",

@@ -9,4 +9,4 @@
       "required": ["@prisma/client", "next-auth"],
       "conflicts": ["redux"]
     }
-  }
+}

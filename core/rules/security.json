@@ -5,7 +5,7 @@
       "id": "no-eval",
       "pattern": "eval\\(|Function\\(['\"]return",
       "errorLevel": "block",
-      "message": "Avoid using eval() as it poses security risks",
+      "message": "Avoid using eval() as it poses security risks - eval() 函數存在安全風險，應避免使用",
       "documentation": "https://ac7x.github.io/security-rules",
       "examples": {
         "invalid": "function runCode(code) {\n  return eval(code);\n}",

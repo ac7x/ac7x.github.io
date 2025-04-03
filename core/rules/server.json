@@ -1,19 +1,19 @@
 {
-    "$schema": "./../shared/lint-config.json",
-    "rules": [
-      {
-        "id": "no-client-hooks",
-        "pattern": "use[A-Z][a-zA-Z]*\\(",
-        "errorLevel": "error",
-        "message": "Detected React Hook in Server Component",
-        "autoFix": {
-          "insert": "'use client';\n",
-          "when": "filePath:/app/"
-        },
-        "examples": {
-          "invalid": "export default function Page() {\n  const [state] = useState();\n}",
-          "fixed": "'use client';\nexport default function Page() {\n  const [state] = useState();\n}"
-        }
+  "$schema": "./../shared/lint-config.json",
+  "rules": [
+    {
+      "id": "no-client-hooks",
+      "pattern": "use[A-Z][a-zA-Z]*\\(",
+      "errorLevel": "error",
+      "message": "Detected React Hook in Server Component - 伺服器元件中不應使用 React Hooks",
+      "autoFix": {
+        "insert": "'use client';\n",
+        "when": "filePath:/app/"
+      },
+      "examples": {
+        "invalid": "export default function Page() {\n  const [state] = useState();\n}",
+        "fixed": "'use client';\nexport default function Page() {\n  const [state] = useState();\n}"
       }
-    ]
-  }
+    }
+  ]
+}

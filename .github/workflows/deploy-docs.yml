@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+# 設定權限 - 修正部署問題
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -45,9 +49,11 @@ jobs:
 
       - name: Generate Version Info
         run: |
-          echo "$(date +%Y.%m.%d)-$(git rev-parse --short HEAD)" > core/version.txt
+          VERSION="$(date +%Y.%m.%d)-$(git rev-parse --short HEAD)"
+          echo "$VERSION" > core/version.txt
           mkdir -p webpanel/public
-          echo "window.APP_VERSION = '$(cat core/version.txt)';" > webpanel/public/version.js
+          echo "window.APP_VERSION = '$VERSION';" > webpanel/public/version.js
+          echo "生成版本: $VERSION"
 
       - name: Generate Rules Documentation
         run: |
@@ -80,4 +86,6 @@ jobs:
           branch: gh-pages
           folder: docs
           clean: true
-          
+
+      - name: Deployment Status
+        run: echo "✅ 部署完成，網站已更新至 https://ac7x.github.io/"

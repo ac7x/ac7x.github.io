@@ -5,7 +5,7 @@
       "id": "no-document-access",
       "pattern": "document\\.",
       "errorLevel": "warning",
-      "message": "Direct document access should be wrapped in useEffect or similar",
+      "message": "Direct document access should be wrapped in useEffect or similar - 直接訪問 document 對象應在 useEffect 等生命週期中進行",
       "examples": {
         "invalid": "const width = document.body.clientWidth;",
         "fixed": "useEffect(() => { setWidth(document.body.clientWidth); }, []);"
