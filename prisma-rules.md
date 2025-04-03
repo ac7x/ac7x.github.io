@@ -1,6 +1,6 @@
 # Prisma 框架規則
 
-> 生成版本: 2025.04.03-6da224a
+> 生成版本: 2025.04.03-f631c45
 
 這是 prisma 框架的適配規則文檔。
 
@@ -10,6 +10,8 @@
 |--------|---------|------|
 | require-select | block | Prisma 查询必须明确指定 select/include - 防止数据泄露 |
 | no-client-prisma | error | 客户端禁止直接调用 Prisma - 请通过 Server Actions 执行 |
+| detect-n-plus-one | warning | 疑似 N+1 查詢模式，請使用 include 或批量查詢優化 |
+| require-transaction | error | 多重寫入操作需包裹在事務中 |
 
 ## 詳細說明
 
@@ -44,6 +46,26 @@ await prisma.user.findMany({ where: { active: true }, select: { id: true } })
 - **說明**: 客户端禁止直接调用 Prisma - 请通过 Server Actions 执行
 
 - **模式**: `prisma\.\w+\.`
+
+
+
+
+### detect-n-plus-one
+
+- **錯誤等級**: warning
+- **說明**: 疑似 N+1 查詢模式，請使用 include 或批量查詢優化
+- **文檔**: [查看詳情](https://ac7x.github.io/prisma-performance#n-plus-one)
+- **模式**: `prisma\.\w+\.find(\w+)\([^}]*}(?:\s*.\s*\w+\.\w+)*`
+
+
+
+
+### require-transaction
+
+- **錯誤等級**: error
+- **說明**: 多重寫入操作需包裹在事務中
+
+- **模式**: `prisma\.\$transaction\(\s*\[\s*]*\s*\)`
 
 
 

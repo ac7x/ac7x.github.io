@@ -4,6 +4,7 @@
 
 ## 規則集列表
 
+- [Architecture 規則](architecture-rules.md)
 - [Client 規則](client-rules.md)
 - [Prisma 規則](prisma-rules.md)
 - [Security 規則](security-rules.md)
@@ -11,6 +12,6 @@
 
 ## 版本訊息
 
-當前文件版本: 2025.04.03-6da224a
+當前文件版本: 2025.04.03-f631c45
 
 更新於: 2025-04-03
