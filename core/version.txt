@@ -1,5 +1,4 @@
 # scripts/bump-version.sh
 # 版本格式: 日期-提交哈希
 # 此檔案由 deploy-docs.yml 工作流程自動更新
-NEXT_VERSION=$(date +%Y.%m.%d)-$(git rev-parse --short HEAD)
-echo $NEXT_VERSION > nextjs/version.txt
+2023.12.01-initial

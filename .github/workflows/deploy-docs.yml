@@ -17,12 +17,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: 'npm'
+          cache-dependency-path: webpanel/package.json
 
       - name: Install Dependencies
         run: |
-          npm install typedoc
+          mkdir -p docs
           cd webpanel
-          npm install
+          npm ci
 
       - name: Generate Version Info
         run: |
@@ -30,29 +32,34 @@ jobs:
           mkdir -p webpanel/public
           echo "window.APP_VERSION = '$(cat core/version.txt)';" > webpanel/public/version.js
 
-      - name: Build Docs
+      - name: Generate Rules Documentation
         run: |
-          mkdir -p docs
-          node core/scripts/generate-docs.js
+          cd core
+          node scripts/generate-docs.js
 
       - name: Build Web Panel
         run: |
           cd webpanel
-          # 確認 next.config.js 或 next.config.mjs 存在
-          if [ ! -f next.config.js ] && [ ! -f next.config.mjs ] && [ ! -f next.config.ts ]; then
-            echo "創建 next.config.js"
-            echo 'module.exports = { output: "export", images: { unoptimized: true } };' > next.config.js
-          fi
           npm run build
           mkdir -p ../docs/webpanel
           cp -r out/* ../docs/webpanel/
 
       - name: Create index redirect
         run: |
-          echo '<meta http-equiv="refresh" content="0;url=./webpanel/" />' > docs/index.html
+          echo '<!DOCTYPE html>
+          <html>
+          <head>
+            <meta http-equiv="refresh" content="0;url=./webpanel/" />
+            <title>框架適配倉儲規則中心</title>
+          </head>
+          <body>
+            <p>請稍候，正在重定向到 <a href="./webpanel/">框架適配倉儲規則中心</a>...</p>
+          </body>
+          </html>' > docs/index.html
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: gh-pages  # 部署到 gh-pages 分支
-          folder: docs  # 部署 docs 資料夾的內容
+          branch: gh-pages
+          folder: docs
+          clean: true
