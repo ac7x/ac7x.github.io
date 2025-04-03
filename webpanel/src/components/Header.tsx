@@ -12,24 +12,24 @@ export default function Header() {
   }
   
   return (
-    <header className="bg-white/70 backdrop-blur-xl border-b border-gray-100 sticky top-0 z-50">
+    <header className="glass-effect sticky top-0 z-50 border-b border-gray-200/50">
       <div className="max-w-7xl mx-auto h-16 px-4 md:px-8 flex items-center justify-between">
         {/* 左側區域：選單按鈕（行動裝置）和標題 */}
         <div className="flex items-center space-x-4 md:space-x-8">
-          {/* 漢堡選單按鈕 - 只在小螢幕顯示 */}
+          {/* 漢堡選單按鈕 - 優化視覺效果 */}
           <button 
-            className="p-2 md:hidden rounded-lg hover:bg-gray-100"
+            className="p-2 md:hidden rounded-lg hover:bg-gray-100/80 transition-colors"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="開啟選單"
           >
-            <span className="block w-6 h-0.5 bg-gray-600 mb-1"></span>
-            <span className="block w-6 h-0.5 bg-gray-600 mb-1"></span>
-            <span className="block w-6 h-0.5 bg-gray-600"></span>
+            <span className="block w-5 h-0.5 bg-gray-600 mb-1.5 transition-transform"></span>
+            <span className="block w-5 h-0.5 bg-gray-600 mb-1.5"></span>
+            <span className="block w-5 h-0.5 bg-gray-600"></span>
           </button>
 
-          {/* 標題 */}
+          {/* 標題 - 增加漸變效果 */}
           <Link href="/">
-            <h2 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent whitespace-nowrap">
+            <h2 className="text-lg font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
               框架適配提示詞倉儲
             </h2>
           </Link>
@@ -41,9 +41,9 @@ export default function Header() {
             <input
               type="search"
               placeholder="搜尋規則與提示詞..."
-              className="w-full pl-10 pr-4 py-2 bg-gray-50/80 border border-gray-200 rounded-full 
-                        focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:outline-none
-                        focus:bg-white/90 transition-all duration-300 shadow-inner-lg"
+              className="w-full pl-10 pr-4 py-2 bg-gray-50/50 border border-gray-200/50 rounded-full 
+                        focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none
+                        focus:bg-white/90 transition-all duration-300"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
