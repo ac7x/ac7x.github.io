@@ -18,6 +18,19 @@
       "errorLevel": "error",
       "message": "客户端禁止直接调用 Prisma - 请通过 Server Actions 执行",
       "when": "filePath:/app/client/"
+    },
+    {
+      "id": "detect-n-plus-one",
+      "pattern": "prisma\\.\\w+\\.find(\\w+)\\([^}]*}(?:\\s*.\\s*\\w+\\.\\w+)*",
+      "errorLevel": "warning",
+      "message": "疑似 N+1 查詢模式，請使用 include 或批量查詢優化",
+      "documentation": "https://ac7x.github.io/prisma-performance#n-plus-one"
+    },
+    {
+      "id": "require-transaction",
+      "pattern": "prisma\\.\\$transaction\\(\\s*\\[\\s*]*\\s*\\)",
+      "errorLevel": "error",
+      "message": "多重寫入操作需包裹在事務中"
     }
   ]
 }

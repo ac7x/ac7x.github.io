@@ -14,6 +14,23 @@
         "invalid": "export default function Page() {\n  const [state] = useState();\n}",
         "fixed": "'use client';\nexport default function Page() {\n  const [state] = useState();\n}"
       }
+    },
+    {
+      "id": "server-action-error-handling",
+      "pattern": "export\\s+async\\s+function\\s+\\w+Action\\s*\\([^)]*\\)\\s*{(?!.*try)",
+      "errorLevel": "error",
+      "message": "Server Actions 必須包含 try/catch 錯誤處理",
+      "examples": {
+        "invalid": "export async function updateUser() {\n  await prisma.user.update(...);\n}",
+        "fixed": "export async function updateUser() {\n  try {\n    await prisma.user.update(...);\n  } catch (error) {\n    logger.error(error);\n    throw new Error('Update failed');\n  }\n}"
+      }
+    },
+    {
+      "id": "direct-prisma-call",
+      "pattern": "prisma\\.\\w+\\.\\w+\\(",
+      "when": "filePath:/app/server/services/",
+      "errorLevel": "warning",
+      "message": "服務層應封裝 Prisma 調用，禁止直接操作"
     }
   ]
 }

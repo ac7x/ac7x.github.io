@@ -4,7 +4,7 @@
     {
       "id": "no-document-access",
       "pattern": "document\\.",
-      "errorLevel": "warning",
+      "errorLevel": "warning",  
       "message": "直接访问 DOM 需包裹在 useEffect 中 - 避免 hydration 错误",
       "examples": {
         "invalid": "const width = document.body.clientWidth;",
@@ -17,6 +17,14 @@
       "errorLevel": "error",
       "message": "客户端禁止直接导入服务端模块或 Prisma - 请使用 Server Actions",
       "when": "filePath:/app/client/"
+    },
+    {
+      "id": "form-transition-check",
+      "pattern": "<form(?!.*useTransition)",
+      "when": "filePath:/app/client/",
+      "errorLevel": "warning",
+      "message": "表單提交需包裹在 useTransition 內防重複提交",
+      "documentation": "https://ac7x.github.io/nextjs-optimization#form-handling"
     }
   ]
 }

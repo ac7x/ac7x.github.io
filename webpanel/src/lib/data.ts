@@ -34,6 +34,13 @@ export const frameworks: Framework[] = [
     version: '0.73.0',
     rulesCount: 18,
     description: '行動應用開發框架規則集',
+  },
+  {
+    id: 'architecture',
+    name: 'Architecture',
+    version: '1.0.0',
+    rulesCount: 3,
+    description: '應用架構和設計模式規則集',
   }
 ];
 

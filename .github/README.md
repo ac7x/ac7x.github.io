@@ -80,3 +80,140 @@
 14. **錯誤監控與日志管理：** 實現錯誤監控與日志管理系統，對應用運行中的錯誤與性能問題進行及時發現和處理，保證系統的穩定運行。
 
 15. **型別與接口設計：** 在動態查詢與查詢結果的處理過程中，應確保查詢型別與結果型別的一致性，避免錯誤的資料傳遞，並能夠在編譯階段捕捉到潛在錯誤。
+
+Next.js 專案開發規範
+
+=== 架構設計 ===
+
+1. 框架與路由系統
+- 採用 Next.js 14 框架並使用 App Router 路由系統
+- 透過 Server Actions 直接執行後端邏輯，無需額外設置 API Routes
+- 動態路由避免過度使用 generateStaticParams 導致構建膨脹
+- 區分 loading.tsx 與 error.tsx 的粒度控制
+
+2. 分層架構與關注點分離
+- 嚴格區分前端渲染與後端邏輯，Server Actions 集中處理業務邏輯
+- 模組化設計，降低耦合度，提升可維護性
+- 大型應用中進一步拆分業務邏輯層級
+- 服務層抽象化避免直接依賴 Prisma
+- 核心業務邏輯應可獨立測試 (如抽離為純函數)
+
+3. 最小化客戶端原則
+- 前端僅負責 UI 渲染與事件處理
+- 禁止在前端元件中直接操作資料庫
+- 所有數據處理與業務邏輯由 Server Actions 處理
+- 表單操作需使用 useTransition 防重複提交
+- 靜態頁面避免混用動態 Server Actions
+
+=== 資料庫規範 ===
+
+2. 連線管理
+- 根據併發量配置連線池參數 (如 connection_limit)
+- 單例模式管理 PrismaClient 實例
+- 生產環境啟用 shadowDatabaseUrl 預防遷移失敗
+- 無伺服器環境需配置 prisma.$connect() 預熱機制
+
+3. 效能優化
+- 大量數據使用分頁機制 (推薦 cursor-based 分頁)
+- 避免過度嵌套的 include/select
+- 禁用 SELECT * 全欄位抓取 (明確指定 select)
+- 批次化高頻寫入操作
+- 定期執行 prisma.$queryRaw 原生 SQL 效能分析
+
+4. 事務與一致性
+- 多操作場景必須使用 Prisma 事務
+- 針對 N+1 問題實施自動檢測機制
+- 高併發情境實施鎖機制/樂觀鎖
+
+1. Prisma 整合
+- 使用 @prisma/client 與自動型別生成
+- 所有資料庫操作通過 Prisma 執行
+- 資料庫變更需同步版本控制與遷移
+- 禁止手動修改 migration.sql 檔案
+- 重大結構變更需附加回滾腳本
+
+=== 安全性規範 ===
+
+1. 輸入驗證
+- 嚴格過濾用戶輸入內容
+- 即使使用 Prisma 仍需手動驗證參數
+- 嚴格驗證 FormData 結構 (建議搭配 Zod 解析)
+
+2. 授權控制
+- Server Actions 內置 RBAC 權限檢查
+- 敏感操作需雙重驗證上下文
+- 啟用 CSRF Token 雙重驗證 (Next.js 14 內建機制)
+
+3. 序列化防護
+- 轉換 BigInt/Date 等非 JSON 格式
+- 禁止直接傳遞資料庫實體物件
+- 自訂 toJSON 方法處理循環參照
+- 敏感欄位需在 Prisma 層級排除 (如 select: { password: false })
+
+=== 程式碼品質 ===
+
+1. 型別安全
+- 充分利用 Prisma 自動型別推導
+- 複雜查詢需明確定義返回型別
+- 禁止使用 any 型別
+- 使用 satisfies 運算子強化型別推論
+- 建立 ResponseDTO 統一包裹 Server Actions 返回格式
+
+2. 錯誤處理
+- Server Actions 必須包含 try/catch
+- 實現錯誤分級處理與回退機制
+- 關鍵操作需記錄完整錯誤日誌
+- 錯誤分類範例：
+  class AppError extends Error {
+    constructor(
+      public readonly type: 'FORBIDDEN' | 'NOT_FOUND' | 'VALIDATION',
+      message: string
+    ) {
+      super(message)
+    }
+  }
+- 前端需對應不同錯誤類型顯示 UI 狀態
+
+3. 效能監控
+- 實施請求響應時間追蹤
+- 整合 Sentry/Datadog 等監控工具
+- 日誌安全規範：禁止記錄完整請求體，實施敏感詞過濾
+
+=== 進階實踐 ===
+
+1. 快取策略
+- 針對高頻查詢實施資料快取
+- 結合 Next.js 內建快取機制
+- 資料異動時主動清除相關路由快取 (revalidatePath)
+- 高頻介接第三方 API 需設置短週期 stale-while-revalidate
+
+2. 併發控制
+- 限制高消耗操作的並發數量
+- 實施請求佇列機制
+- 串流渲染策略：延遲載入區塊使用 Suspense 與骨架屏
+
+3. 依賴管理
+- 定期更新第三方套件
+- 重大版本升級需完整測試
+- Bundle 管控：定期執行 @next/bundle-analyzer 檢測
+
+4. 文件規範
+- 複雜查詢需添加 SQL 註解
+- 自定義型別需補充 JSDoc 說明
+- 測試策略：
+  - 使用 @testing-library/react 測試互動邏輯
+  - 對 Server Actions 實施端到端測試 (搭配 Playwright)
+
+=== 團隊協作規範 ===
+
+1. Commit 管控
+- 資料庫遷移檔案需獨立提交 (禁止與業務邏輯混合)
+- 包含 Server Actions 修改需附加影響範圍說明
+
+2. Code Review 重點
+- 特別檢查 Server Actions 的錯誤回滾完整性
+- 驗證 Prisma 查詢是否觸發全表掃描 (EXPLAIN 分析)
+
+3. 環境隔離策略
+- 建立統一 Docker 開發環境避免本地資料庫版本差異
+- 預生產環境需啟用與正式環境相同規格的連線池

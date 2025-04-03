@@ -3,8 +3,8 @@ import { frameworks } from '@/lib/data'
 export default function Dashboard() {
   const statsData = {
     promptsCount: "125",
-    frameworksCount: frameworks.length.toString(),
-    rulesCount: "42"
+    frameworksCount: frameworks.length.toString(), // 這會自動更新為 5
+    rulesCount: "45" // 原本的 42 + 新增的 3 條規則
   }
 
   return (

@@ -1,0 +1,28 @@
+{
+    "$schema": "./../shared/lint-config.json",
+    "rules": [
+      {
+        "id": "response-dto-format",
+        "pattern": "return\\s+JSON\\.stringify\\([^{]",
+        "errorLevel": "warning",
+        "message": "API 回應需包裹在 ResponseDTO 結構內",
+        "examples": {
+          "invalid": "return JSON.stringify(data);",
+          "fixed": "return ResponseDTO.success(data);"
+        }
+      },
+      {
+        "id": "cache-revalidation",
+        "pattern": "await\\s+prisma\\.\\w+\\.(update|delete)(?!.*revalidatePath)",
+        "errorLevel": "warning",
+        "message": "資料異動後需呼叫 revalidatePath 清除快取"
+      },
+      {
+        "id": "csrf-header-check",
+        "pattern": "headers\\(\\s*\\)(?!.*'X-CSRF-Token')",
+        "when": "filePath:/app/server/actions/",
+        "errorLevel": "error",
+        "message": "敏感操作需包含 CSRF Token 驗證標頭"
+      }
+    ]
+  }
