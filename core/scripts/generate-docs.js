@@ -4,11 +4,26 @@ const path = require('path');
 // 簡單的文檔生成器
 const RULES_DIR = path.join(__dirname, '../rules');
 const OUTPUT_DIR = path.join(__dirname, '../../docs');
+const BASE_URL = 'https://ac7x.github.io'; // 網站基礎 URL
 
 // 建立輸出目錄
 if (!fs.existsSync(OUTPUT_DIR)) {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   console.log(`✅ 建立目錄: ${OUTPUT_DIR}`);
+}
+
+// 從 version.txt 讀取版本
+let version = "未知版本";
+try {
+  if (fs.existsSync(path.join(__dirname, '../version.txt'))) {
+    const versionContent = fs.readFileSync(path.join(__dirname, '../version.txt'), 'utf8');
+    const versionMatch = versionContent.match(/\d+\.\d+\.\d+-[\w]+/);
+    if (versionMatch) {
+      version = versionMatch[0];
+    }
+  }
+} catch (err) {
+  console.warn('⚠️ 無法讀取版本信息:', err.message);
 }
 
 // 讀取規則檔案
@@ -25,6 +40,11 @@ try {
 if (ruleFiles.length === 0) {
   console.warn('⚠️ 未找到規則檔案');
   // 繼續執行，生成空索引
+}
+
+// 格式化程式碼示例
+function formatCodeExample(code, language = 'javascript') {
+  return `\`\`\`${language}\n${code}\n\`\`\``;
 }
 
 // 生成每個規則檔案的文檔
@@ -49,8 +69,10 @@ ruleFiles.forEach(file => {
     const fileName = file.replace('.json', '');
     const outputPath = path.join(OUTPUT_DIR, `${fileName}-rules.md`);
     
-    // 簡單地生成 Markdown
+    // 生成更豐富的 Markdown
     const mdContent = `# ${fileName.charAt(0).toUpperCase() + fileName.slice(1)} 框架規則
+
+> 生成版本: ${version}
 
 這是 ${fileName} 框架的適配規則文檔。
 
@@ -69,7 +91,23 @@ ${rules.rules.map(rule => `
 - **說明**: ${rule.message || '無說明'}
 ${rule.documentation ? `- **文檔**: [查看詳情](${rule.documentation})` : ''}
 ${rule.pattern ? `- **模式**: \`${rule.pattern}\`` : ''}
+
+${rule.examples ? `
+**不符合規則的範例**:
+
+${formatCodeExample(rule.examples.invalid)}
+
+${rule.examples.fixed ? `
+**修復後的範例**:
+
+${formatCodeExample(rule.examples.fixed)}
+` : ''}
+` : ''}
 `).join('\n')}
+
+---
+
+[返回規則列表](./rules.md)
 `;
     
     fs.writeFileSync(outputPath, mdContent);
@@ -94,6 +132,12 @@ ${ruleFiles.length > 0 ?
   }).join('\n') : 
   '目前尚無可用的規則集。'
 }
+
+## 版本訊息
+
+當前文件版本: ${version}
+
+更新於: ${new Date().toISOString().split('T')[0]}
 `;
 
 fs.writeFileSync(indexPath, indexContent);

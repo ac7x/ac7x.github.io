@@ -56,9 +56,9 @@ export default function Dashboard() {
 function DashboardCard({ title, value, href }: { title: string; value: string; href: string }) {
   return (
     <Link href={href}>
-      <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition-shadow">
-        <h3 className="text-gray-500">{title}</h3>
-        <p className="text-3xl font-semibold mt-2">{value}</p>
+      <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+        <h3 className="text-gray-500 font-medium">{title}</h3>
+        <p className="text-4xl font-bold mt-2 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">{value}</p>
       </div>
     </Link>
   )
@@ -67,11 +67,11 @@ function DashboardCard({ title, value, href }: { title: string; value: string; h
 function FrameworkCard({ name, version, rules, href }: { name: string; version: string; rules: number; href: string }) {
   return (
     <Link href={href}>
-      <div className="bg-white p-5 rounded-lg shadow hover:shadow-md transition-all border border-gray-100">
-        <h3 className="font-medium text-lg">{name}</h3>
-        <div className="flex justify-between text-sm text-gray-500 mt-2">
-          <span>v{version}</span>
-          <span>{rules} 條規則</span>
+      <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
+        <h3 className="font-semibold text-lg text-gray-800">{name}</h3>
+        <div className="flex justify-between items-center mt-3">
+          <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">v{version}</span>
+          <span className="text-gray-600 font-medium">{rules} 條規則</span>
         </div>
       </div>
     </Link>
