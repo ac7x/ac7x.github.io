@@ -1,0 +1,15 @@
+{
+  "$schema": "./../shared/lint-config.json",
+  "rules": [
+    {
+      "id": "no-document-access",
+      "pattern": "document\\.",
+      "errorLevel": "warning",
+      "message": "Direct document access should be wrapped in useEffect or similar",
+      "examples": {
+        "invalid": "export default function Component() {\n  const width = document.body.clientWidth;\n  return <div>{width}</div>;\n}",
+        "fixed": "export default function Component() {\n  const [width, setWidth] = useState(0);\n  useEffect(() => {\n    setWidth(document.body.clientWidth);\n  }, []);\n  return <div>{width}</div>;\n}"
+      }
+    }
+  ]
+}

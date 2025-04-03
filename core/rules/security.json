@@ -1,0 +1,16 @@
+{
+  "$schema": "./../shared/lint-config.json",
+  "rules": [
+    {
+      "id": "no-eval",
+      "pattern": "eval\\(|Function\\(['\"]return",
+      "errorLevel": "block",
+      "message": "Avoid using eval() as it poses security risks",
+      "documentation": "https://ac7x.github.io/security-rules",
+      "examples": {
+        "invalid": "function runCode(code) {\n  return eval(code);\n}",
+        "fixed": "function runCode(code) {\n  // Use a safer alternative or validate inputs\n  return JSON.parse(code);\n}"
+      }
+    }
+  ]
+}
