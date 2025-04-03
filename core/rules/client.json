@@ -5,11 +5,18 @@
       "id": "no-document-access",
       "pattern": "document\\.",
       "errorLevel": "warning",
-      "message": "Direct document access should be wrapped in useEffect or similar - 直接訪問 document 對象應在 useEffect 等生命週期中進行",
+      "message": "直接访问 DOM 需包裹在 useEffect 中 - 避免 hydration 错误",
       "examples": {
         "invalid": "const width = document.body.clientWidth;",
         "fixed": "useEffect(() => { setWidth(document.body.clientWidth); }, []);"
       }
+    },
+    {
+      "id": "no-server-imports",
+      "pattern": "from\\s+['\"]@/(server|prisma)",
+      "errorLevel": "error",
+      "message": "客户端禁止直接导入服务端模块或 Prisma - 请使用 Server Actions",
+      "when": "filePath:/app/client/"
     }
   ]
 }

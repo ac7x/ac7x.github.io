@@ -5,12 +5,18 @@
       "id": "no-eval",
       "pattern": "eval\\(|Function\\(['\"]return",
       "errorLevel": "block",
-      "message": "Avoid using eval() as it poses security risks - eval() 函數存在安全風險，應避免使用",
+      "message": "禁止使用 eval() - 存在代码注入风险",
       "documentation": "https://ac7x.github.io/security-rules",
       "examples": {
         "invalid": "function runCode(code) {\n  return eval(code);\n}",
-        "fixed": "function runCode(code) {\n  // Use a safer alternative or validate inputs\n  return JSON.parse(code);\n}"
+        "fixed": "function runCode(code) {\n  return JSON.parse(code);\n}"
       }
+    },
+    {
+      "id": "no-env-leak",
+      "pattern": "process\\.env\\.(?!NEXT_PUBLIC_)",
+      "errorLevel": "error",
+      "message": "禁止在客户端暴露敏感环境变量 - 仅允许 NEXT_PUBLIC_ 前缀"
     }
   ]
 }
