@@ -1,4 +1,4 @@
-name: Deploy Docs
+name: Deploy Web Panel and Docs
 
 on:
   push:
@@ -19,10 +19,24 @@ jobs:
           node-version: 18
 
       - name: Install Dependencies
-        run: npm install typedoc
+        run: |
+          npm install typedoc
+          cd webpanel
+          npm install
 
       - name: Build Docs
-        run: npx typedoc nextjs/*.json --out ./docs
+        run: npx typedoc core/rules/*.json --out ./docs
+
+      - name: Build Web Panel
+        run: |
+          cd webpanel
+          npm run build
+          npm run export
+          cp -r out/* ../docs/webpanel/
+
+      - name: Create index redirect
+        run: |
+          echo '<meta http-equiv="refresh" content="0;url=./webpanel/" />' > docs/index.html
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
