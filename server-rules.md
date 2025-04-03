@@ -1,5 +1,7 @@
 # Server 框架規則
 
+> 生成版本: 2025.04.03-e0b8851
+
 這是 server 框架的適配規則文檔。
 
 ## 規則列表
@@ -18,3 +20,28 @@
 
 - **模式**: `use[A-Z][a-zA-Z]*\(`
 
+
+**不符合規則的範例**:
+
+```javascript
+export default function Page() {
+  const [state] = useState();
+}
+```
+
+
+**修復後的範例**:
+
+```javascript
+'use client';
+export default function Page() {
+  const [state] = useState();
+}
+```
+
+
+
+
+---
+
+[返回規則列表](./rules.md)

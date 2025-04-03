@@ -1,5 +1,7 @@
 # Security 框架規則
 
+> 生成版本: 2025.04.03-e0b8851
+
 這是 security 框架的適配規則文檔。
 
 ## 規則列表
@@ -18,3 +20,28 @@
 - **文檔**: [查看詳情](https://ac7x.github.io/security-rules)
 - **模式**: `eval\(|Function\(['"]return`
 
+
+**不符合規則的範例**:
+
+```javascript
+function runCode(code) {
+  return eval(code);
+}
+```
+
+
+**修復後的範例**:
+
+```javascript
+function runCode(code) {
+  // Use a safer alternative or validate inputs
+  return JSON.parse(code);
+}
+```
+
+
+
+
+---
+
+[返回規則列表](./rules.md)

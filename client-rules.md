@@ -1,5 +1,7 @@
 # Client 框架規則
 
+> 生成版本: 2025.04.03-e0b8851
+
 這是 client 框架的適配規則文檔。
 
 ## 規則列表
@@ -18,3 +20,23 @@
 
 - **模式**: `document\.`
 
+
+**不符合規則的範例**:
+
+```javascript
+const width = document.body.clientWidth;
+```
+
+
+**修復後的範例**:
+
+```javascript
+useEffect(() => { setWidth(document.body.clientWidth); }, []);
+```
+
+
+
+
+---
+
+[返回規則列表](./rules.md)

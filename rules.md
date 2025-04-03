@@ -8,3 +8,9 @@
 - [Prisma 規則](prisma-rules.md)
 - [Security 規則](security-rules.md)
 - [Server 規則](server-rules.md)
+
+## 版本訊息
+
+當前文件版本: 2025.04.03-e0b8851
+
+更新於: 2025-04-03
