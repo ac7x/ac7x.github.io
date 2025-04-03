@@ -1,0 +1,17 @@
+# 在 .github/workflows/update-prompts.yml 中
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate JSON Syntax
+        run: |
+          find . -name "*.json" | xargs jq empty
+      - name: Test Rule Impact
+        run: |
+          ./scripts/test-prompt-changes.sh
