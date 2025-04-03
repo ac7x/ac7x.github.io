@@ -11,7 +11,7 @@ export default function Header() {
   }
   
   return (
-    <header className="bg-white shadow-sm p-4">
+    <header className="bg-white shadow p-4">
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-lg font-semibold">框架適配提示詞倉儲</h2>
