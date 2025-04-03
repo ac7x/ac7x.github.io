@@ -20,17 +20,14 @@ export default function Dashboard() {
           <DashboardCard 
             title="提示詞總數" 
             value={statsData.promptsCount}
-            href="/prompts/browse" 
           />
           <DashboardCard 
             title="框架支援" 
             value={statsData.frameworksCount}
-            href="/frameworks" 
           />
           <DashboardCard 
             title="規則數量" 
             value={statsData.rulesCount}
-            href="/rules" 
           />
         </div>
       </section>
@@ -53,14 +50,12 @@ export default function Dashboard() {
   )
 }
 
-function DashboardCard({ title, value, href }: { title: string; value: string; href: string }) {
+function DashboardCard({ title, value }: { title: string; value: string }) {
   return (
-    <Link href={href}>
-      <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100">
-        <h3 className="text-gray-500 font-medium">{title}</h3>
-        <p className="text-4xl font-bold mt-2 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">{value}</p>
-      </div>
-    </Link>
+    <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100 cursor-default">
+      <h3 className="text-gray-500 font-medium">{title}</h3>
+      <p className="text-4xl font-bold mt-2 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">{value}</p>
+    </div>
   )
 }
 
